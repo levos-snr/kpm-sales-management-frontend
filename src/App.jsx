@@ -1,15 +1,19 @@
-import { Button } from "@/components/ui/button"
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
-import RegistrationPage from "./pages/RegistrationPage";
+import { Outlet } from "react-router-dom";
 
 function App() {
   return (
-    <>
-     <RegistrationPage />
-    </>
-   
-  )
+    <div>
+      {/* <header>
+        <Navbar />
+      </header> */}
+
+      <main>
+        <Outlet />
+      </main>
+
+    {/* <Footer /> */}
+   </div>
+  );
 }
 
-export default App
-
+export default App;
