@@ -1,4 +1,4 @@
-import { Outlet } from "react-router-dom";
+import { Outlet } from 'react-router-dom';
 
 function App() {
   return (
@@ -8,11 +8,11 @@ function App() {
       </header> */}
 
       <main>
-        <Outlet />
+          <Outlet />
       </main>
 
-    {/* <Footer /> */}
-   </div>
+      {/* <Footer /> */}
+    </div>
   );
 }
 
