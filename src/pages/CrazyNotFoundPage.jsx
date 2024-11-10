@@ -1,5 +1,5 @@
-import { useEffect } from "react";
-import { useParams, Link, useNavigate  } from "react-router-dom";
+import { useEffect } from 'react';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 
 import {
   Instagram,
@@ -8,15 +8,15 @@ import {
   Twitter,
   Youtube,
   Ghost,
-} from "lucide-react";
-import { Tooltip } from "flowbite-react";
+} from 'lucide-react';
+import { Tooltip } from 'flowbite-react';
 
 const CrazyNotFoundPage = () => {
- const navigate = useNavigate();  
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const fourOhFour = document.getElementById("four-oh-four");
-    fourOhFour.classList.add("animate-bounce");
+    const fourOhFour = document.getElementById('four-oh-four');
+    fourOhFour.classList.add('animate-bounce');
   }, []);
 
   return (
@@ -34,8 +34,9 @@ const CrazyNotFoundPage = () => {
       </p>
 
       <button
-           onClick={() => navigate(-1)}
-          className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded-full transition duration-300 transform hover:scale-110">
+        onClick={() => navigate(-1)}
+        className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded-full transition duration-300 transform hover:scale-110"
+      >
         Back to Homepage
       </button>
 
