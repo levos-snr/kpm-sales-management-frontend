@@ -6,8 +6,7 @@ import RegistrationForm from "/src/pages/RegistrationForm";
 import OrganizationCustomize from "/src/pages/OrganizationCustomize";
 import SuccessPage from "/src/pages/SuccessPage";
 import CompanyDetails from "/src/pages/CompanyDetails";
-
-
+import StatsHeader from "/src/components/ui/StatsHeader";
 
 
 const routes = [
@@ -23,9 +22,10 @@ const routes = [
        { path: "/organization-setup", element: <OrganizationCustomize /> },
        { path: "/success", element: <SuccessPage /> },
        { path: "/company-details", element: <CompanyDetails /> },
+      { path: "/", element: <Home /> },
+      { path: "/stats", element: <StatsHeader /> }, 
     ],
   },
 ];
-
 
 export default routes;
