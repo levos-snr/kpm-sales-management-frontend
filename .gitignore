@@ -23,3 +23,9 @@ dist-ssr
 *.sln
 *.sw?
 
+.env
+.env.local
+
+
+# Sentry Config File
+.env.sentry-build-plugin
