@@ -2,7 +2,7 @@ import { Link } from "react-router-dom"; // Updated import for React Router
 import { ArrowLeft, Briefcase, Upload, Edit } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-export default function OrganizationSetupPage() {
+export default function OrganizationCustomize() {
   return (
     <div className="min-h-screen bg-gray-100 p-4 md:p-6 lg:p-8 flex flex-col justify-between">
       <div className="max-w-2xl mx-auto w-full flex-grow flex flex-col">

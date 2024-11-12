@@ -9,6 +9,13 @@ import axios from 'axios';
 import './index.css';
 import 'react-toastify/dist/ReactToastify.css';
 import routes from './routes';
+import * as Sentry from "@sentry/react";
+
+
+Sentry.init({
+  dsn: "https://21bd041ce6905a9e923ce312defb708d@o4508283672461312.ingest.de.sentry.io/4508283676721232",
+  integrations: [],
+});
 
 // Create a client
 const queryClient = new QueryClient({

@@ -196,7 +196,7 @@ const LoginPage = () => {
         <div className="h-full flex flex-col">
           <div className="p-6 flex justify-end space-x-4">
             <Button variant="ghost" size="sm">
-              Don't have an account?
+                New to our platform?{' '}
             </Button>
             <Button 
               size="sm"
@@ -336,17 +336,6 @@ const LoginPage = () => {
                       </Button>
                     </div>
 
-                    <p className="text-center text-sm text-gray-600">
-                      New to our platform?{' '}
-                      <Button
-                        type="button"
-                        variant="link"
-                        className="text-blue-600 font-semibold hover:text-blue-700 p-0"
-                        onClick={() => navigate('/register')}
-                      >
-                        Create an account
-                      </Button>
-                    </p>
                   </div>
                 </form>
               </CardContent>

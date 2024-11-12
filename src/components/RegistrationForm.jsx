@@ -170,8 +170,48 @@ const RegistrationForm = () => {
       <div className="min-h-screen flex flex-col lg:flex-row">
         {/* Left Panel - Branding */}
         <div className="lg:w-1/2 bg-gradient-to-br from-blue-600 to-indigo-700 p-8 lg:p-12 flex flex-col justify-between relative overflow-hidden">
-          {/* ... (keeping the same left panel UI) ... */}
-        </div>
+                  <div className="relative z-10">
+                    <h1 className="text-4xl font-bold text-white mb-4">FIELDSALE</h1>
+                    <p className="text-blue-100 text-xl mb-6">Your Gateway to Effortless Management</p>
+                  </div>
+                  
+                  {/* Decorative Elements */}
+                  <div className="absolute bottom-0 right-0 transform translate-x-1/4 translate-y-1/4">
+                    <div className="w-64 h-64 bg-blue-500 rounded-full opacity-20" />
+                  </div>
+                  <div className="absolute top-0 left-0 transform -translate-x-1/4 -translate-y-1/4">
+                    <div className="w-96 h-96 bg-indigo-500 rounded-full opacity-20" />
+                  </div>
+                  
+                  <div className="relative z-10">
+                    <div className="space-y-6 text-white/90">
+                      <div className="flex items-center space-x-4">
+                        <div className="w-12 h-12 bg-white/10 rounded-lg flex items-center justify-center">
+                          <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                          </svg>
+                        </div>
+                        <div>
+                          <h3 className="font-semibold">Seamless Integration</h3>
+                          <p className="text-sm text-blue-100">Connect and collaborate effortlessly</p>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-center space-x-4">
+                        <div className="w-12 h-12 bg-white/10 rounded-lg flex items-center justify-center">
+                          <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                          </svg>
+                        </div>
+                        <div>
+                          <h3 className="font-semibold">Lightning Fast</h3>
+                          <p className="text-sm text-blue-100">Optimized for maximum performance</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
 
         {/* Right Panel - Form */}
         <div className="lg:w-1/2 p-8 lg:p-12 flex items-center justify-center">
