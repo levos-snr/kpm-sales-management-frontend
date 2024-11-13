@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import {
@@ -10,24 +10,16 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { User, Settings, LogOut } from 'lucide-react';
-
 import { useNavigate } from 'react-router-dom';
-import supabase from '@/lib/supabase';
+import useStore from '../store';
 
-const UserAvatarMenu = ({ session }) => {
+const UserAvatarMenu = () => {
   const navigate = useNavigate();
+  const { user, clearAuth } = useStore();
 
-  const handleSignOut = async () => {
-    try {
-      const { error } = await supabase.auth.signOut();
-      if (error) {
-        console.error('Error signing out:', error.message);
-      } else {
-        navigate('/');
-      }
-    } catch (error) {
-      console.error('Error:', error);
-    }
+  const handleSignOut = () => {
+    clearAuth();
+    navigate('/');
   };
 
   // Get user initials for avatar fallback
@@ -48,13 +40,10 @@ const UserAvatarMenu = ({ session }) => {
         <Button variant="ghost" className="relative h-8 w-8 rounded-full">
           <Avatar className="h-8 w-8">
             <AvatarImage
-              src={
-                session?.user?.user_metadata?.avatar_url ||
-                `/api/placeholder/32/32`
-              }
-              alt={session?.user?.email}
+              src={user?.user_metadata?.avatar_url || `/api/placeholder/32/32`}
+              alt={user?.email}
             />
-            <AvatarFallback>{getInitials(session?.user?.email)}</AvatarFallback>
+            <AvatarFallback>{getInitials(user?.email)}</AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
@@ -62,11 +51,9 @@ const UserAvatarMenu = ({ session }) => {
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
             <p className="text-sm font-medium leading-none">
-              {session?.user?.user_metadata?.full_name || 'User'}
+              {user?.user_metadata?.full_name || 'User'}
             </p>
-            <p className="text-xs leading-none text-gray-500">
-              {session?.user?.email}
-            </p>
+            <p className="text-xs leading-none text-gray-500">{user?.email}</p>
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />

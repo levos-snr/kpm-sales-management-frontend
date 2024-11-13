@@ -1,26 +1,23 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { Bell, Menu, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import UserAvatarMenu from './UserAvatarMenu';
-import supabase from '@/lib/supabase';
+import useStore from '../store';
 
 const Navbar = ({ setSidebarOpen, sidebarOpen }) => {
-  const [session, setSession] = useState(null);
+  const { user, setUser } = useStore();
+  
+  console.log(user);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-    });
+    const unsubscribe = useStore.subscribe(
+      (state) => state.user,
+      (user) => setUser(user)
+    );
 
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
+    return unsubscribe;
+  }, [setUser]);
 
   return (
     <nav className="bg-white border-b border-gray-200 z-10">
@@ -58,7 +55,7 @@ const Navbar = ({ setSidebarOpen, sidebarOpen }) => {
               <Button variant="ghost" size="icon">
                 <Bell className="h-5 w-5" />
               </Button>
-              <UserAvatarMenu session={session} />
+              <UserAvatarMenu user={user} />
             </div>
           </div>
         </div>

@@ -7,6 +7,7 @@ import CompanyDetails from '../pages/CompanyDetails';
 import OrganizationCustomize from '../pages/OrganizationCustomize';
 import SuccessPage from '../pages/SuccessPage';
 import { toast } from 'react-toastify';
+import useStore from '../store';
 
 const MultiStepRegistration = () => {
   const navigate = useNavigate();
@@ -28,25 +29,30 @@ const MultiStepRegistration = () => {
     address: '',
     logo_url: '',
   });
+  
+   const { setUser, setAccessToken, setRefreshToken } = useStore();
 
-  const registerMutation = useMutation({
-    mutationFn: registerUser,
-    onSuccess: (data) => {
-      toast.success('Registration successful!');
-      setStep(4);
-    },
-    onError: (error) => {
-      toast.error('Registration failed. Please try again.');
-      console.error('Registration error:', error);
-    },
-  });
+   const registerMutation = useMutation({
+     mutationFn: registerUser,
+     onSuccess: (data) => {
+       setUser(data.user);
+       setAccessToken(data.access_token);
+       setRefreshToken(data.refresh_token);
+       toast.success('Registration successful!');
+       setStep(4);
+     },
+     onError: (error) => {
+       toast.error('Registration failed. Please try again.');
+       console.error('Registration error:', error);
+     },
+   });
 
-  const updateFormData = (newData) => {
-    setFormData((prevData) => ({ ...prevData, ...newData }));
-  };
+   const updateFormData = (newData) => {
+      setFormData((prevData) => ({ ...prevData, ...newData }));
+    };
 
-  const nextStep = () => setStep(step + 1);
-  const prevStep = () => setStep(step - 1);
+   const nextStep = () => setStep(step + 1);
+   const prevStep = () => setStep(step - 1);
 
   const handleSubmit = async () => {
     registerMutation.mutate(formData);

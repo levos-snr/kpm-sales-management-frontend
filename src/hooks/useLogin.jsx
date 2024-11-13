@@ -1,24 +1,25 @@
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { loginUser } from  "../api/auth";
+import { loginUser } from '../api/auth';
+import useStore from '../store';
 
 const useLogin = () => {
   const navigate = useNavigate();
+  const { setUser, setAccessToken, setRefreshToken } = useStore();
 
   const { mutate, isLoading } = useMutation({
     mutationFn: loginUser,
     onSuccess: (data) => {
-      localStorage.setItem('user', JSON.stringify(data.user));
-      localStorage.setItem('accessToken', data.access_token);
-      localStorage.setItem('refreshToken', data.refresh_token);
+      setUser(data.user);
+      setAccessToken(data.access_token);
+      setRefreshToken(data.refresh_token);
       navigate('/dashboard');
     },
     onError: (error) => {
       toast.error(error.response?.data?.error || 'An error occurred while logging in');
     },
   });
-
 
   return { login: mutate, isLoading };
 };
