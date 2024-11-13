@@ -1,36 +1,31 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { Bell, Menu, Search } from 'lucide-react';
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import UserAvatarMenu from './UserAvatarMenu';
-import supabase from '@/lib/supabase';
+import useStore from '../store';
 
 const Navbar = ({ setSidebarOpen, sidebarOpen }) => {
-    
-    const [session, setSession] = useState(null);
-    
-    useEffect(() => {
-      supabase.auth.getSession().then(({ data: { session } }) => {
-        setSession(session);
-      });
-      
-      const {
-        data: { subscription },
-      } = supabase.auth.onAuthStateChange((_event, session) => {
-        setSession(session);
-      });
-    
-      return () => subscription.unsubscribe();
-    }, []);
+  const { user, setUser } = useStore();
+  
+  console.log(user);
 
-    
+  useEffect(() => {
+    const unsubscribe = useStore.subscribe(
+      (state) => state.user,
+      (user) => setUser(user)
+    );
+
+    return unsubscribe;
+  }, [setUser]);
+
   return (
     <nav className="bg-white border-b border-gray-200 z-10">
       <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex">
-            <Button 
-              variant="ghost" 
+            <Button
+              variant="ghost"
               size="icon"
               className="inline-flex items-center lg:hidden"
               onClick={() => setSidebarOpen(!sidebarOpen)}
@@ -38,7 +33,9 @@ const Navbar = ({ setSidebarOpen, sidebarOpen }) => {
               <Menu className="h-6 w-6" />
             </Button>
             <div className="flex items-center flex-shrink-0 ml-4">
-              <span className="text-2xl font-bold text-gray-900">FIELDSALE</span>
+              <span className="text-2xl font-bold text-gray-900">
+                FIELDSALE
+              </span>
             </div>
           </div>
           <div className="flex items-center">
@@ -58,7 +55,7 @@ const Navbar = ({ setSidebarOpen, sidebarOpen }) => {
               <Button variant="ghost" size="icon">
                 <Bell className="h-5 w-5" />
               </Button>
-              <UserAvatarMenu session={session} />
+              <UserAvatarMenu user={user} />
             </div>
           </div>
         </div>

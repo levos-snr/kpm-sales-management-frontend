@@ -1,4 +1,3 @@
-// components/DashboardCharts.jsx
 import React from 'react';
 import {
   LineChart,
@@ -17,7 +16,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from '@/components/ui/card';
 
 const RevenueChart = ({ data }) => (
   <Card>
@@ -30,28 +29,28 @@ const RevenueChart = ({ data }) => (
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={data}>
             <CartesianGrid strokeDasharray="3 3" className="stroke-gray-200" />
-            <XAxis 
-              dataKey="name" 
-              className="text-xs" 
+            <XAxis
+              dataKey="name"
+              className="text-xs"
               tick={{ fill: '#6B7280' }}
             />
-            <YAxis 
-              className="text-xs" 
+            <YAxis
+              className="text-xs"
               tick={{ fill: '#6B7280' }}
               tickFormatter={(value) => `$${value.toLocaleString()}`}
             />
-            <Tooltip 
-              contentStyle={{ 
+            <Tooltip
+              contentStyle={{
                 backgroundColor: '#fff',
                 border: '1px solid #e5e7eb',
-                borderRadius: '6px'
+                borderRadius: '6px',
               }}
               formatter={(value) => [`$${value.toLocaleString()}`, 'Revenue']}
             />
-            <Line 
-              type="monotone" 
-              dataKey="value" 
-              stroke="#4F46E5" 
+            <Line
+              type="monotone"
+              dataKey="value"
+              stroke="#4F46E5"
               strokeWidth={2}
               dot={{ fill: '#4F46E5', strokeWidth: 2 }}
               activeDot={{ r: 6 }}
@@ -74,32 +73,29 @@ const PerformanceChart = ({ data }) => (
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={data}>
             <CartesianGrid strokeDasharray="3 3" className="stroke-gray-200" />
-            <XAxis 
-              dataKey="name" 
-              className="text-xs" 
+            <XAxis
+              dataKey="name"
+              className="text-xs"
               tick={{ fill: '#6B7280' }}
             />
-            <YAxis 
-              className="text-xs" 
-              tick={{ fill: '#6B7280' }}
-            />
+            <YAxis className="text-xs" tick={{ fill: '#6B7280' }} />
             <Tooltip
-              contentStyle={{ 
+              contentStyle={{
                 backgroundColor: '#fff',
                 border: '1px solid #e5e7eb',
-                borderRadius: '6px'
+                borderRadius: '6px',
               }}
               formatter={(value) => [value.toLocaleString(), '']}
             />
-            <Bar 
-              dataKey="sales" 
-              fill="#4F46E5" 
+            <Bar
+              dataKey="sales"
+              fill="#4F46E5"
               radius={[4, 4, 0, 0]}
               name="Sales"
             />
-            <Bar 
-              dataKey="orders" 
-              fill="#818CF8" 
+            <Bar
+              dataKey="orders"
+              fill="#818CF8"
               radius={[4, 4, 0, 0]}
               name="Orders"
             />
@@ -111,7 +107,6 @@ const PerformanceChart = ({ data }) => (
 );
 
 export const DashboardCharts = () => {
-  // Sample data - replace with your actual data source
   const salesData = [
     { name: 'Jan', value: 4000 },
     { name: 'Feb', value: 3000 },

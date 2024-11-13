@@ -1,5 +1,5 @@
 import React from 'react';
-import  DashboardStats  from './DashboardStats';
+import DashboardStats from './DashboardStats';
 import { DashboardCharts } from './DashboardCharts';
 import { RecentActivity } from './RecentActivity';
 

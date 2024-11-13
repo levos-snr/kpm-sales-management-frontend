@@ -1,15 +1,16 @@
-import { Link } from "react-router-dom"; // Updated import for React Router
-import { Check } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { Check } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
-export default function SuccessPage() {
+const SuccessPage = () => {
   return (
     <div className="min-h-screen bg-white p-4 md:p-6 lg:p-8 flex flex-col justify-between">
       <div className="max-w-2xl mx-auto w-full flex-grow flex flex-col items-center justify-center space-y-8">
         {/* Logo */}
         <div className="mb-8">
           <img
-            src="/assets/success-logo.svg" // You can use a placeholder logo or your own success-related logo
+            src="/assets/success-logo.svg"
             alt="Success Logo"
             width="200"
             height="40"
@@ -35,7 +36,7 @@ export default function SuccessPage() {
         </div>
 
         {/* Action Button */}
-        <Link to="/dashboard"> {/* Button redirect to another page, such as a dashboard */}
+        <Link to="/dashboard">
           <Button className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-2 rounded-md">
             Let&apos;s Start!
           </Button>
@@ -43,4 +44,6 @@ export default function SuccessPage() {
       </div>
     </div>
   );
-}
+};
+
+export default SuccessPage;

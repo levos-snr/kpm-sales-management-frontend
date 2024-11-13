@@ -1,25 +1,22 @@
 import React, { useState } from 'react';
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import {
-  Card,
-  CardContent,
-} from "@/components/ui/card";
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Card, CardContent } from '@/components/ui/card';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Slider } from "@/components/ui/slider";
-import { Package, Download, Plus, MoreHorizontal } from "lucide-react";
-import { Switch } from "@/components/ui/switch";
+} from '@/components/ui/select';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Slider } from '@/components/ui/slider';
+import { Package, Download, Plus, MoreHorizontal } from 'lucide-react';
+import { Switch } from '@/components/ui/switch';
 
 export default function ProductsContent() {
   const [priceRange, setPriceRange] = useState([0, 200]);
-  
+
   const products = [
     {
       id: 'P909',
@@ -28,9 +25,8 @@ export default function ProductsContent() {
       totalBuyer: '2456',
       price: '$34.00',
       stock: '249',
-      status: 'Active'
+      status: 'Active',
     },
-    // Add more products as needed
   ];
 
   const categories = [
@@ -68,9 +64,15 @@ export default function ProductsContent() {
                 <h4 className="font-medium">Category</h4>
                 <div className="space-y-2">
                   {categories.map((category) => (
-                    <div key={category.id} className="flex items-center space-x-2">
+                    <div
+                      key={category.id}
+                      className="flex items-center space-x-2"
+                    >
                       <Checkbox id={`category-${category.id}`} />
-                      <label htmlFor={`category-${category.id}`} className="text-sm">
+                      <label
+                        htmlFor={`category-${category.id}`}
+                        className="text-sm"
+                      >
                         {category.name}
                       </label>
                     </div>
@@ -147,7 +149,9 @@ export default function ProductsContent() {
 
               {/* Tab Navigation */}
               <div className="flex gap-6 border-b mb-6">
-                <Button variant="ghost" className="border-b-2 border-primary">All Product</Button>
+                <Button variant="ghost" className="border-b-2 border-primary">
+                  All Product
+                </Button>
                 <Button variant="ghost">Live</Button>
                 <Button variant="ghost">Archive</Button>
                 <Button variant="ghost">Out of stock</Button>
@@ -183,7 +187,10 @@ export default function ProductsContent() {
                         <td className="py-3 px-4">{product.stock}</td>
                         <td className="py-3 px-4">
                           <div className="flex items-center gap-2  ">
-                            <Switch defaultChecked={product.status === 'Active'} className="bg-blue-600"/>
+                            <Switch
+                              defaultChecked={product.status === 'Active'}
+                              className="bg-blue-600"
+                            />
                             <span>{product.status}</span>
                           </div>
                         </td>
@@ -195,7 +202,9 @@ export default function ProductsContent() {
 
               {/* Pagination */}
               <div className="flex justify-between items-center mt-4">
-                <span className="text-sm text-gray-500">Showing 1 to 10 of 10 entries</span>
+                <span className="text-sm text-gray-500">
+                  Showing 1 to 10 of 10 entries
+                </span>
                 <div className="flex gap-1">
                   {[1, 2, 3, 4, 10].map((page) => (
                     <Button
