@@ -1,3 +1,5 @@
+// src/routes.js
+
 import App from "/src/App.jsx";
 import Dashboard from "/src/pages/Dashboard.jsx";
 import CrazyNotFoundPage from "/src/pages/CrazyNotFoundPage";
@@ -7,6 +9,7 @@ import OrganizationCustomize from "/src/pages/OrganizationCustomize";
 import SuccessPage from "/src/pages/SuccessPage";
 import CompanyDetails from "/src/pages/CompanyDetails";
 import StatsHeader from "/src/components/ui/StatsHeader";
+import ProductForm from "/src/components/ProductForm.jsx";  
 
 
 const routes = [
@@ -16,14 +19,15 @@ const routes = [
     errorElement: <CrazyNotFoundPage />,
     children: [
       { path: "/", element: <LoginPage /> },
-        { path: "login", element: <LoginPage /> },
-       { path: "/dashboard", element: <Dashboard /> },
-       { path: "/register", element: <RegistrationForm /> },
-       { path: "/organization-setup", element: <OrganizationCustomize /> },
-       { path: "/success", element: <SuccessPage /> },
-       { path: "/company-details", element: <CompanyDetails /> },
-      { path: "/", element: <Home /> },
-      { path: "/stats", element: <StatsHeader /> }, 
+      { path: "login", element: <LoginPage /> },
+      { path: "/dashboard", element: <Dashboard /> },
+      { path: "/register", element: <RegistrationForm /> },
+      { path: "/organization-setup", element: <OrganizationCustomize /> },
+      { path: "/success", element: <SuccessPage /> },
+      { path: "/company-details", element: <CompanyDetails /> },
+      { path: "/stats", element: <StatsHeader /> },
+      { path: "/product-form", element: <ProductForm /> },
+
     ],
   },
 ];
