@@ -1,36 +1,34 @@
 import React, { useState, useEffect } from 'react';
 import { Bell, Menu, Search } from 'lucide-react';
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import UserAvatarMenu from './UserAvatarMenu';
 import supabase from '@/lib/supabase';
 
 const Navbar = ({ setSidebarOpen, sidebarOpen }) => {
-    
-    const [session, setSession] = useState(null);
-    
-    useEffect(() => {
-      supabase.auth.getSession().then(({ data: { session } }) => {
-        setSession(session);
-      });
-      
-      const {
-        data: { subscription },
-      } = supabase.auth.onAuthStateChange((_event, session) => {
-        setSession(session);
-      });
-    
-      return () => subscription.unsubscribe();
-    }, []);
+  const [session, setSession] = useState(null);
 
-    
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+    });
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
   return (
     <nav className="bg-white border-b border-gray-200 z-10">
       <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex">
-            <Button 
-              variant="ghost" 
+            <Button
+              variant="ghost"
               size="icon"
               className="inline-flex items-center lg:hidden"
               onClick={() => setSidebarOpen(!sidebarOpen)}
@@ -38,7 +36,9 @@ const Navbar = ({ setSidebarOpen, sidebarOpen }) => {
               <Menu className="h-6 w-6" />
             </Button>
             <div className="flex items-center flex-shrink-0 ml-4">
-              <span className="text-2xl font-bold text-gray-900">FIELDSALE</span>
+              <span className="text-2xl font-bold text-gray-900">
+                FIELDSALE
+              </span>
             </div>
           </div>
           <div className="flex items-center">

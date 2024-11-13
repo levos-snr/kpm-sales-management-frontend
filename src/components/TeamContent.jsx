@@ -1,8 +1,8 @@
 import React from 'react';
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Download, UserPlus, UserPlus2 } from "lucide-react";
+import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Download, UserPlus, UserPlus2 } from 'lucide-react';
 import {
   Table,
   TableBody,
@@ -10,22 +10,21 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from '@/components/ui/table';
 
 export const TeamContent = () => {
   const employees = [
-    { 
-      id: '1001', 
-      name: 'Ricky Antony', 
+    {
+      id: '1001',
+      name: 'Ricky Antony',
       role: 'Web Designer',
       email: 'abc@gmail.com',
       phone: '+91 123 456 7890',
       gender: 'Male',
       location: 'Delhi',
       status: 'Active',
-      avatar: '/api/placeholder/32/32'
+      avatar: '/api/placeholder/32/32',
     },
-    // Add more employees as needed
   ];
 
   return (
@@ -74,12 +73,17 @@ export const TeamContent = () => {
                         <Avatar className="h-8 w-8">
                           <AvatarImage src={employee.avatar} />
                           <AvatarFallback>
-                            {employee.name.split(' ').map(n => n[0]).join('')}
+                            {employee.name
+                              .split(' ')
+                              .map((n) => n[0])
+                              .join('')}
                           </AvatarFallback>
                         </Avatar>
                         <div>
                           <div className="font-medium">{employee.name}</div>
-                          <div className="text-sm text-gray-500">{employee.role}</div>
+                          <div className="text-sm text-gray-500">
+                            {employee.role}
+                          </div>
                         </div>
                       </div>
                     </TableCell>
@@ -88,10 +92,14 @@ export const TeamContent = () => {
                     <TableCell>{employee.gender}</TableCell>
                     <TableCell>{employee.location}</TableCell>
                     <TableCell>
-                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
-                        ${employee.status === 'Active' 
-                          ? 'bg-green-100 text-green-800' 
-                          : 'bg-red-100 text-red-800'}`}>
+                      <span
+                        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                        ${
+                          employee.status === 'Active'
+                            ? 'bg-green-100 text-green-800'
+                            : 'bg-red-100 text-red-800'
+                        }`}
+                      >
                         {employee.status}
                       </span>
                     </TableCell>
@@ -126,4 +134,3 @@ export const TeamContent = () => {
     </div>
   );
 };
-

@@ -1,97 +1,25 @@
-import { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
-import { Checkbox } from '@/components/ui/checkbox';
 import { Separator } from '@/components/ui/separator';
 import { Eye, EyeOff, Mail, Apple, ArrowRight, Check } from 'lucide-react';
-import { Auth } from '@supabase/auth-ui-react';
-import { ThemeSupa } from '@supabase/auth-ui-shared';
 import { FaGithub } from 'react-icons/fa6';
-import supabase from '@/lib/supabase';
-import useLogin from '@/hooks/useLogin';
 
-const LoginPage = () => {
+const RegistrationPage = ({ formData, updateFormData, nextStep }) => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
-  const [session, setSession] = useState(null);
-  
-  
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-  });
-  const { login, isLoading } = useLogin();
 
-  useEffect(() => {
-    // Get initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      if (session) {
-        navigate('/dashboard');
-      }
-    });
-
-    // Listen for auth changes
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-      if (session) {
-        navigate('/dashboard');
-      }
-    });
-
-    return () => subscription.unsubscribe();
-  }, [navigate]);
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    updateFormData({ [name]: value });
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    login(formData);
-  };
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-  
-  
-
-  const handleSignOut = async () => {
-    try {
-      const { error } = await supabase.auth.signOut();
-      if (error) {
-        console.error('Error signing out:', error.message);
-        // You might want to add toast notification here
-      } else {
-        navigate('/');
-      }
-    } catch (error) {
-      console.error('Error:', error);
-    }
-  };
-
-  const handleOAuthLogin = async (provider) => {
-    try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider,
-        options: {
-          redirectTo: `${window.location.origin}/dashboard`,
-        },
-      });
-
-      if (error) {
-        console.error(`Error signing in with ${provider}:`, error.message);
-        // You might want to add toast notification here
-      }
-    } catch (error) {
-      console.error('Error:', error);
-    }
+    nextStep();
   };
 
   const Features = ({ icon, title, description }) => (
@@ -105,30 +33,6 @@ const LoginPage = () => {
       </div>
     </div>
   );
-
-  // If user is logged in, show logged in state
-  if (session) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <Card className="w-full max-w-md">
-          <CardContent className="p-6">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">
-              Welcome Back!
-            </h2>
-            <p className="text-gray-600 mb-6">
-              You're logged in as {session.user.email}
-            </p>
-            <Button
-              onClick={handleSignOut}
-              className="w-full h-12 bg-blue-600 text-white hover:bg-blue-700 transition-colors"
-            >
-              Sign out
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen flex flex-col lg:flex-row">
@@ -151,10 +55,10 @@ const LoginPage = () => {
           <div className="my-auto space-y-12">
             <div>
               <h2 className="text-4xl font-bold text-white mb-4">
-                Welcome Back!
+                Join Our Platform
               </h2>
               <p className="text-xl text-white/90">
-                Sign in to continue your journey
+                Create an account to start your journey
               </p>
             </div>
 
@@ -187,19 +91,19 @@ const LoginPage = () => {
         </div>
       </div>
 
-      {/* Right Section - Login Form */}
+      {/* Right Section - Registration Form */}
       <div className="w-full lg:w-1/2 bg-gray-50">
         <div className="h-full flex flex-col">
           <div className="p-6 flex justify-end space-x-4">
             <Button variant="ghost" size="sm">
-              New to our platform?{' '}
+              Already have an account?{' '}
             </Button>
             <Button
               size="sm"
               className="bg-blue-600 text-white hover:bg-blue-700"
-              onClick={() => navigate('/register')}
+              onClick={() => navigate('/login')}
             >
-              Sign up
+              Sign in
             </Button>
           </div>
 
@@ -207,7 +111,9 @@ const LoginPage = () => {
             <Card className="w-full max-w-md border-none shadow-none bg-transparent">
               <CardContent>
                 <div className="mb-8">
-                  <h2 className="text-2xl font-bold text-gray-900">Sign In</h2>
+                  <h2 className="text-2xl font-bold text-gray-900">
+                    Create Account
+                  </h2>
                   <p className="text-gray-600 mt-2">
                     Please enter your details
                   </p>
@@ -215,6 +121,44 @@ const LoginPage = () => {
 
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div className="space-y-4">
+                    <div className="space-y-2">
+                      <Label
+                        htmlFor="first_name"
+                        className="text-sm font-medium"
+                      >
+                        First Name
+                      </Label>
+                      <Input
+                        id="first_name"
+                        name="first_name"
+                        type="text"
+                        value={formData.first_name}
+                        onChange={handleChange}
+                        placeholder="John"
+                        className="h-12 border-gray-200 focus:border-blue-500 focus:ring-blue-500"
+                        required
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label
+                        htmlFor="last_name"
+                        className="text-sm font-medium"
+                      >
+                        Last Name
+                      </Label>
+                      <Input
+                        id="last_name"
+                        name="last_name"
+                        type="text"
+                        value={formData.last_name}
+                        onChange={handleChange}
+                        placeholder="Doe"
+                        className="h-12 border-gray-200 focus:border-blue-500 focus:ring-blue-500"
+                        required
+                      />
+                    </div>
+
                     <div className="space-y-2">
                       <Label htmlFor="email" className="text-sm font-medium">
                         Email Address
@@ -224,8 +168,8 @@ const LoginPage = () => {
                         name="email"
                         type="email"
                         value={formData.email}
-                        onChange={handleInputChange}
-                        placeholder="name@company.com"
+                        onChange={handleChange}
+                        placeholder="john@example.com"
                         className="h-12 border-gray-200 focus:border-blue-500 focus:ring-blue-500"
                         required
                       />
@@ -241,7 +185,7 @@ const LoginPage = () => {
                           name="password"
                           type={showPassword ? 'text' : 'password'}
                           value={formData.password}
-                          onChange={handleInputChange}
+                          onChange={handleChange}
                           placeholder="Enter your password"
                           className="h-12 border-gray-200 focus:border-blue-500 focus:ring-blue-500 pr-12"
                           required
@@ -262,77 +206,34 @@ const LoginPage = () => {
                       </div>
                     </div>
 
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-2">
-                        <Checkbox id="remember" />
-                        <Label
-                          htmlFor="remember"
-                          className="text-sm text-gray-600 font-normal"
-                        >
-                          Remember me
-                        </Label>
-                      </div>
-                      <Button
-                        type="button"
-                        variant="link"
-                        className="text-sm text-blue-600 hover:text-blue-700 font-semibold p-0"
-                        onClick={() => handleOAuthLogin('resetPassword')}
+                    <div className="space-y-2">
+                      <Label
+                        htmlFor="phone_number"
+                        className="text-sm font-medium"
                       >
-                        Forgot password?
-                      </Button>
+                        Phone Number
+                      </Label>
+                      <Input
+                        id="phone_number"
+                        name="phone_number"
+                        type="tel"
+                        value={formData.phone_number}
+                        onChange={handleChange}
+                        placeholder="+1234567890"
+                        className="h-12 border-gray-200 focus:border-blue-500 focus:ring-blue-500"
+                        required
+                      />
                     </div>
 
                     <Button
                       type="submit"
                       className="w-full h-12 bg-blue-600 text-white hover:bg-blue-700 transition-colors"
-                      disabled={isLoading}
                     >
-                      {isLoading ? (
-                        'Signing in...'
-                      ) : (
-                        <span className="flex items-center justify-center">
-                          Sign in
-                          <ArrowRight className="ml-2 w-4 h-4" />
-                        </span>
-                      )}
-                    </Button>
-
-                    <div className="relative">
-                      <Separator className="my-8" />
-                      <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-gray-50 px-4 text-sm text-gray-500">
-                        Or continue with
+                      <span className="flex items-center justify-center">
+                        Continue
+                        <ArrowRight className="ml-2 w-4 h-4" />
                       </span>
-                    </div>
-
-                    <div className="grid grid-cols-3 gap-4">
-                      <Button
-                        type="button"
-                        variant="outline"
-                        className="h-12 border-gray-200 hover:bg-gray-50"
-                        onClick={() => handleOAuthLogin('google')}
-                      >
-                        <Mail className="w-5 h-5 mr-2" />
-                        Google
-                      </Button>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        className="h-12 border-gray-200 hover:bg-gray-50"
-                        onClick={() => handleOAuthLogin('apple')}
-                      >
-                        <Apple className="w-5 h-5 mr-2" />
-                        Apple
-                      </Button>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        className="h-12 border-gray-200 hover:bg-gray-50"
-                        onClick={() => handleOAuthLogin('github')}
-                      >
-                        <FaGithub className="w-5 h-5 mr-2" />
-                        GitHub
-                      </Button>
-                    </div>
+                    </Button>
                   </div>
                 </form>
               </CardContent>
@@ -344,4 +245,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+export default RegistrationPage;

@@ -1,20 +1,20 @@
 import React from 'react';
-import { 
-  Users, 
-  Package, 
-  MessageSquare, 
+import {
+  Users,
+  Package,
+  MessageSquare,
   Calendar,
   Settings,
   HelpCircle,
   MapPin,
-  ClipboardList
+  ClipboardList,
 } from 'lucide-react';
-import { Button } from "@/components/ui/button";
+import { Button } from '@/components/ui/button';
 
 const SidebarItem = ({ icon: Icon, label, active, onClick }) => (
-  <Button 
-    variant={active ? "secondary" : "ghost"}
-    className="w-full justify-start" 
+  <Button
+    variant={active ? 'secondary' : 'ghost'}
+    className="w-full justify-start"
     onClick={() => onClick(label.toLowerCase())}
   >
     <Icon className="mr-3 h-5 w-5 text-gray-500" />
@@ -37,7 +37,8 @@ const Sidebar = ({ isOpen, activeTab, setActiveTab }) => {
   ];
 
   return (
-    <aside className={`
+    <aside
+      className={`
       ${isOpen ? 'block' : 'hidden'} 
       lg:block 
       w-64 
@@ -47,9 +48,9 @@ const Sidebar = ({ isOpen, activeTab, setActiveTab }) => {
       flex-none
       h-full
       overflow-y-hidden
-    `}>
+    `}
+    >
       <div className="p-4 h-full">
-    
         <nav className="space-y-1">
           {menuItems.map((item) => (
             <SidebarItem

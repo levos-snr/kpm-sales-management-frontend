@@ -1,6 +1,6 @@
 import React from 'react';
 import { DollarSign, Users, ArrowUpRight, ArrowDownRight } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 const StatCard = ({ title, value, icon: Icon, change, isPositive }) => (
   <Card>
@@ -29,29 +29,29 @@ const DashboardStats = () => {
       value: '$45,231.89',
       icon: DollarSign,
       change: '+20.1%',
-      isPositive: true
+      isPositive: true,
     },
     {
       title: 'New Customers',
       value: '+2350',
       icon: Users,
       change: '+18.2%',
-      isPositive: true
+      isPositive: true,
     },
     {
       title: 'Active Users',
       value: '+12,234',
       icon: Users,
       change: '-2.5%',
-      isPositive: false
+      isPositive: false,
     },
     {
       title: 'Total Sales',
       value: '12,234',
       icon: DollarSign,
       change: '+4.1%',
-      isPositive: true
-    }
+      isPositive: true,
+    },
   ];
 
   return (

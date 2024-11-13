@@ -1,4 +1,3 @@
-// main.jsx
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
@@ -9,15 +8,13 @@ import axios from 'axios';
 import './index.css';
 import 'react-toastify/dist/ReactToastify.css';
 import routes from './routes';
-import * as Sentry from "@sentry/react";
-
+import * as Sentry from '@sentry/react';
 
 Sentry.init({
-  dsn: "https://21bd041ce6905a9e923ce312defb708d@o4508283672461312.ingest.de.sentry.io/4508283676721232",
+  dsn: 'https://21bd041ce6905a9e923ce312defb708d@o4508283672461312.ingest.de.sentry.io/4508283676721232',
   integrations: [],
 });
 
-// Create a client
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -27,13 +24,11 @@ const queryClient = new QueryClient({
   },
 });
 
-// Set axios default baseURL based on the environment
 const isDev = import.meta.env.MODE === 'development';
 axios.defaults.baseURL = isDev
   ? import.meta.env.VITE_API_BASE_URL_DEV
   : import.meta.env.VITE_API_BASE_URL_PROD;
 
-// Create the router using createBrowserRouter
 const router = createBrowserRouter(routes);
 
 createRoot(document.getElementById('root')).render(

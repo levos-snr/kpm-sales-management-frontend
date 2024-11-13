@@ -8,7 +8,7 @@ function App() {
       </header> */}
 
       <main>
-          <Outlet />
+        <Outlet />
       </main>
 
       {/* <Footer /> */}

@@ -1,284 +1,292 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Pencil } from 'lucide-react';
-import { FaLongArrowAltLeft, FaGoogle } from "react-icons/fa";
-import { IoCloudUploadOutline, IoLogoMicrosoft } from "react-icons/io5";
-import { FaLinkedinIn } from "react-icons/fa6";
-import supabase from '@/lib/supabase';
+import { useQuery } from '@tanstack/react-query';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Card, CardContent } from '@/components/ui/card';
+import { Label } from '@/components/ui/label';
+import { ArrowLeft, ArrowRight, Check } from 'lucide-react';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { fetchCompanies } from '../api/companies';
 
-const CompanyDetails = () => {
+const CompanyDetails = ({ formData, updateFormData, nextStep, prevStep }) => {
   const navigate = useNavigate();
-  const [step, setStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
-  const [session, setSession] = useState(null);
-  const [formData, setFormData] = useState({
-    first_name: '',
-    last_name: '',
-    email: '',
-    phone_number: '',
-    password: '',
-    confirm_password: '',
-    role: 'admin',
-    designation: '',
-    id_number: '',
-    company_name: '',
-    company_code: '',
-    registration_number: '',
-    country: '',
-    sub_county: '',
-    ward: '',
-    time_zone: '',
-    address: '',
-    company_email: '',
-    logo_url: '',
+
+  // Fetch companies
+  const { data: companies, isLoading: isLoadingCompanies } = useQuery({
+    queryKey: ['companies'],
+    queryFn: fetchCompanies,
   });
-
-  useEffect(() => {
-    // Get initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      if (session) {
-        navigate('/dashboard');
-      }
-    });
-    
-    // Listen for auth changes
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-      if (session) {
-        navigate('/dashboard');
-      }
-    });
-
-    return () => subscription.unsubscribe();
-  }, [navigate]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    updateFormData({ [name]: value });
+  };
+
+  const handleCompanySelect = (companyId) => {
+    const selectedCompany = companies.find(
+      (company) => company.id === parseInt(companyId)
+    );
+    if (selectedCompany) {
+      updateFormData({
+        company_id: selectedCompany.id,
+        company_name: selectedCompany.company_name,
+        company_code: selectedCompany.company_code,
+        registration_number: selectedCompany.registration_number,
+        county: selectedCompany.county,
+        time_zone: selectedCompany.time_zone,
+        address: selectedCompany.address,
+      });
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-
-    try {
-      // First, register the user with Supabase Auth
-      const { data: authData, error: authError } = await supabase.auth.signUp({
-        email: formData.email,
-        password: formData.password,
-        options: {
-          data: {
-            first_name: formData.first_name,
-            company_name: formData.company_name,
-          }
-        }
-      });
-
-      if (authError) {
-        console.error('Registration error:', authError.message);
-        // You might want to add toast notification here
-        return;
-      }
-
-      // If auth successful, store additional user data in a custom table
-      if (authData.user) {
-        const { error: profileError } = await supabase
-          .from('company_profiles')
-          .insert([
-            {
-              user_id: authData.user.id,
-              company_name: formData.company_name,
-              company_code: formData.company_code,
-              registration_number: formData.registration_number,
-              country: formData.country,
-              time_zone: formData.time_zone,
-              logo_url: formData.logo_url,
-            }
-          ]);
-
-        if (profileError) {
-          console.error('Error saving company profile:', profileError.message);
-          // You might want to add toast notification here
-        } else {
-          navigate('/dashboard');
-        }
-      }
-    } catch (error) {
-      console.error('Error:', error);
-    } finally {
-      setIsLoading(false);
-    }
+    nextStep();
+    setIsLoading(false);
   };
 
-  const handleOAuthSignUp = async (provider) => {
-    try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider,
-        options: {
-          redirectTo: `${window.location.origin}/dashboard`,
-        },
-      });
-      
-      if (error) {
-        console.error(`Error signing up with ${provider}:`, error.message);
-        // You might want to add toast notification here
-      }
-    } catch (error) {
-      console.error('Error:', error);
-    }
-  };
-
-  const InputField = ({ name, type = "text", placeholder, value, onChange }) => (
-    <input
-      type={type}
-      name={name}
-      placeholder={placeholder}
-      value={value}
-      onChange={onChange}
-      className="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-200 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-200 transition-all duration-200 text-gray-700"
-    />
-  );
-
-  const StepIndicator = ({ currentStep }) => (
-    <div className="flex items-center justify-center space-x-2 mb-8">
-      {[1, 2, 3].map((num) => (
-        <div
-          key={num}
-          className={`w-3 h-3 rounded-full transition-all duration-300 ${
-            num === currentStep ? 'bg-blue-600 w-6' : 
-            num < currentStep ? 'bg-blue-400' : 'bg-gray-300'
-          }`}
-        />
-      ))}
+  const Features = ({ icon, title, description }) => (
+    <div className="flex items-start space-x-4">
+      <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0">
+        {icon}
+      </div>
+      <div>
+        <h3 className="font-semibold text-lg text-white">{title}</h3>
+        <p className="text-white/70 text-sm">{description}</p>
+      </div>
     </div>
   );
 
-  // If user is already logged in, redirect to dashboard
-  if (session) {
-    navigate('/dashboard');
-    return null;
-  }
-
-
   return (
-  <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50">
     <div className="min-h-screen flex flex-col lg:flex-row">
-      {/* Left Panel - Branding */}
-      <div className="lg:w-1/2 bg-gradient-to-br from-blue-600 to-indigo-700 p-8 lg:p-12 flex flex-col justify-between relative overflow-hidden">
-                <div className="relative z-10">
-                  <h1 className="text-4xl font-bold text-white mb-4">FIELDSALE</h1>
-                  <p className="text-blue-100 text-xl mb-6">Your Gateway to Effortless Management</p>
-                </div>
-                
-                {/* Decorative Elements */}
-                <div className="absolute bottom-0 right-0 transform translate-x-1/4 translate-y-1/4">
-                  <div className="w-64 h-64 bg-blue-500 rounded-full opacity-20" />
-                </div>
-                <div className="absolute top-0 left-0 transform -translate-x-1/4 -translate-y-1/4">
-                  <div className="w-96 h-96 bg-indigo-500 rounded-full opacity-20" />
-                </div>
-                
-                <div className="relative z-10">
-                  <div className="space-y-6 text-white/90">
-                    <div className="flex items-center space-x-4">
-                      <div className="w-12 h-12 bg-white/10 rounded-lg flex items-center justify-center">
-                        <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                        </svg>
-                      </div>
-                      <div>
-                        <h3 className="font-semibold">Seamless Integration</h3>
-                        <p className="text-sm text-blue-100">Connect and collaborate effortlessly</p>
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-center space-x-4">
-                      <div className="w-12 h-12 bg-white/10 rounded-lg flex items-center justify-center">
-                        <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                        </svg>
-                      </div>
-                      <div>
-                        <h3 className="font-semibold">Lightning Fast</h3>
-                        <p className="text-sm text-blue-100">Optimized for maximum performance</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+      {/* Left Section - Branding */}
+      <div className="w-full lg:w-1/2 bg-gradient-to-br from-blue-600 to-indigo-800 relative overflow-hidden">
+        <div className="absolute inset-0">
+          <div className="absolute inset-0 bg-black/20" />
+          <img
+            src="/api/placeholder/1200/800"
+            alt="Abstract background"
+            className="object-cover w-full h-full opacity-20"
+          />
+        </div>
 
-      
-      
-      
-      
-      <div className="lg:w-1/2 p-8 lg:p-12 flex items-center justify-center">
-        <div className="w-full max-w-md">
-          <div className="space-y-6">
-            <div className="text-center">
-              <h2 className="text-3xl font-bold text-gray-900">Organization Details</h2>
-              <p className="text-gray-600 mt-2">Tell us about your company</p>
-            </div>
-
-            <form className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <InputField
-                  name="country"
-                  placeholder="Country"
-                  value={formData.country}
-                  onChange={handleChange}
-                />
-                <InputField
-                  name="time_zone"
-                  placeholder="Time Zone"
-                  value={formData.time_zone}
-                  onChange={handleChange}
-                />
-              </div>
-
-              <InputField
-                name="company_name"
-                placeholder="Company Name"
-                value={formData.company_name}
-                onChange={handleChange}
-              />
-              
-              <InputField
-                name="company_code"
-                placeholder="Company Code"
-                value={formData.company_code}
-                onChange={handleChange}
-              />
-
-              <div className="flex justify-between pt-4">
-                <button
-                  type="button"
-                  onClick={() => setStep(1)}
-                  className="flex items-center px-6 py-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors duration-200 text-gray-600"
-                >
-                  <FaLongArrowAltLeft className="w-4 h-4 mr-2" />
-                  Back
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setStep(3)}
-                  className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
-                >
-                  Continue
-                </button>
-              </div>
-            </form>
+        <div className="relative z-10 h-full p-12 flex flex-col">
+          <div className="mb-12">
+            <h1 className="text-3xl font-bold text-white">FIELDSALE</h1>
           </div>
 
+          <div className="my-auto space-y-12">
+            <div>
+              <h2 className="text-4xl font-bold text-white mb-4">
+                Company Details
+              </h2>
+              <p className="text-xl text-white/90">
+                Tell us about your organization
+              </p>
+            </div>
+
+            <div className="space-y-8">
+              <Features
+                icon={<Check className="w-6 h-6 text-white" />}
+                title="Customized Setup"
+                description="Tailor the system to your company's specific needs"
+              />
+              <Features
+                icon={<Check className="w-6 h-6 text-white" />}
+                title="Efficient Management"
+                description="Streamline your sales processes and team coordination"
+              />
+              <Features
+                icon={<Check className="w-6 h-6 text-white" />}
+                title="Insightful Analytics"
+                description="Gain valuable insights into your company's performance"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Right Section - Company Details Form */}
+      <div className="w-full lg:w-1/2 bg-gray-50">
+        <div className="h-full flex flex-col">
+          <div className="flex-1 flex items-center justify-center p-6 sm:p-12">
+            <Card className="w-full max-w-md border-none shadow-none bg-transparent">
+              <CardContent>
+                <div className="mb-8">
+                  <h2 className="text-2xl font-bold text-gray-900">
+                    Company Information
+                  </h2>
+                  <p className="text-gray-600 mt-2">
+                    Please select or enter your company details
+                  </p>
+                </div>
+
+                <form onSubmit={handleSubmit} className="space-y-6">
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <Label
+                        htmlFor="company_select"
+                        className="text-sm font-medium"
+                      >
+                        Select Existing Company
+                      </Label>
+                      <Select
+                        onValueChange={handleCompanySelect}
+                        disabled={isLoadingCompanies}
+                      >
+                        <SelectTrigger className="h-12 border-gray-200 focus:border-blue-500 focus:ring-blue-500">
+                          <SelectValue placeholder="Select a company" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {companies?.map((company) => (
+                            <SelectItem
+                              key={company.id}
+                              value={company.id.toString()}
+                            >
+                              <span className="x-sm text-gray-500">Name: </span>{' '}
+                              {company.company_name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label
+                        htmlFor="company_name"
+                        className="text-sm font-medium"
+                      >
+                        Company Name
+                      </Label>
+                      <Input
+                        type="text"
+                        name="company_name"
+                        id="company_name"
+                        value={formData.company_name}
+                        onChange={handleChange}
+                        className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                        required
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label
+                        htmlFor="company_code"
+                        className="text-sm font-medium"
+                      >
+                        Company Code
+                      </Label>
+                      <Input
+                        type="text"
+                        name="company_code"
+                        id="company_code"
+                        value={formData.company_code}
+                        onChange={handleChange}
+                        className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                        required
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label
+                        htmlFor="registration_number"
+                        className="text-sm font-medium"
+                      >
+                        Registration Number
+                      </Label>
+                      <Input
+                        id="registration_number"
+                        name="registration_number"
+                        value={formData.registration_number}
+                        onChange={handleChange}
+                        className="h-12 border-gray-200 focus:border-blue-500 focus:ring-blue-500"
+                        required
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="county" className="text-sm font-medium">
+                        County
+                      </Label>
+                      <Input
+                        id="county"
+                        name="county"
+                        value={formData.county}
+                        onChange={handleChange}
+                        className="h-12 border-gray-200 focus:border-blue-500 focus:ring-blue-500"
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label
+                        htmlFor="time_zone"
+                        className="text-sm font-medium"
+                      >
+                        Time Zone
+                      </Label>
+                      <Input
+                        id="time_zone"
+                        name="time_zone"
+                        value={formData.time_zone}
+                        onChange={handleChange}
+                        className="h-12 border-gray-200 focus:border-blue-500 focus:ring-blue-500"
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="address" className="text-sm font-medium">
+                        Address
+                      </Label>
+                      <Input
+                        id="address"
+                        name="address"
+                        value={formData.address}
+                        onChange={handleChange}
+                        className="h-12 border-gray-200 focus:border-blue-500 focus:ring-blue-500"
+                      />
+                    </div>
+
+                    <div className="flex justify-between space-x-4">
+                      <Button
+                        type="button"
+                        onClick={prevStep}
+                        className="w-full h-12 bg-gray-200 text-gray-800 hover:bg-gray-300 transition-colors"
+                      >
+                        <ArrowLeft className="w-4 h-4 mr-2" />
+                        Back
+                      </Button>
+                      <Button
+                        type="submit"
+                        className="w-full h-12 bg-blue-600 text-white hover:bg-blue-700 transition-colors"
+                        disabled={isLoading}
+                      >
+                        {isLoading ? (
+                          'Saving...'
+                        ) : (
+                          <span className="flex items-center justify-center">
+                            Continue
+                            <ArrowRight className="ml-2 w-4 h-4" />
+                          </span>
+                        )}
+                      </Button>
+                    </div>
+                  </div>
+                </form>
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </div>
     </div>
-  </div>
   );
 };
 
