@@ -8,7 +8,6 @@ import useStore from '../store';
 const Navbar = ({ setSidebarOpen, sidebarOpen }) => {
   const { user, setUser } = useStore();
   
-  console.log(user);
 
   useEffect(() => {
     const unsubscribe = useStore.subscribe(

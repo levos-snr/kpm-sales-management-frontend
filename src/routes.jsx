@@ -13,6 +13,7 @@ const MultiStepRegistration = lazy(() => import('/src/components/MultiStepRegist
 const  SuccessPage = lazy(() => import('/src/pages/SuccessPage'));
 const  StatsHeader = lazy(() => import('/src/components/StatsHeader'));
 const LoadingSpinner = lazy(() => import('/src/components/LoadingSpinner'));
+const Profile = lazy(() => import('/src/pages/Profile'))
 
 
 const routes = [
@@ -81,6 +82,16 @@ const routes = [
           <ProtectedRoute>
             <Suspense fallback={<LoadingSpinner />}>
               <StatsHeader />
+            </Suspense>
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: 'profile',
+        element: (
+          <ProtectedRoute>
+            <Suspense fallback={<LoadingSpinner />}>
+              <Profile />
             </Suspense>
           </ProtectedRoute>
         ),

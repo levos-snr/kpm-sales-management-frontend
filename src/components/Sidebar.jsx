@@ -3,13 +3,13 @@ import {
   Users,
   Package,
   MessageSquare,
-  Calendar,
+  ClipboardList,
   Settings,
   HelpCircle,
   MapPin,
-  ClipboardList,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import useStore from '../store';
 
 const SidebarItem = ({ icon: Icon, label, active, onClick }) => (
   <Button
@@ -23,36 +23,68 @@ const SidebarItem = ({ icon: Icon, label, active, onClick }) => (
 );
 
 const Sidebar = ({ isOpen, activeTab, setActiveTab }) => {
-  const menuItems = [
+  const { user } = useStore();
+
+  const adminMenuItems = [
     { icon: Package, label: 'Dashboard' },
     { icon: Users, label: 'Team' },
     { icon: Package, label: 'Products' },
-    { icon: Users, label: 'Customer' },
     { icon: ClipboardList, label: 'Reports' },
     { icon: MessageSquare, label: 'Messages' },
-    { icon: Calendar, label: 'Tasks' },
     { icon: MapPin, label: 'Locations' },
     { icon: Settings, label: 'Settings' },
     { icon: HelpCircle, label: 'Support' },
   ];
 
+  const managerMenuItems = [
+    { icon: Package, label: 'Dashboard' },
+    { icon: Users, label: 'Team' },
+    { icon: Package, label: 'Products' },
+    { icon: ClipboardList, label: 'Reports' },
+    { icon: MessageSquare, label: 'Messages' },
+    { icon: MapPin, label: 'Locations' },
+    { icon: Settings, label: 'Settings' },
+    { icon: HelpCircle, label: 'Support' },
+  ];
+
+  const salesRepMenuItems = [
+    { icon: Package, label: 'Dashboard' },
+    { icon: MessageSquare, label: 'Messages' },
+    { icon: Settings, label: 'Settings' },
+    { icon: HelpCircle, label: 'Support' },
+    { icon: ClipboardList, label: 'Tasks' },
+  ];
+
+  const renderMenuItems = () => {
+    switch (user.role) {
+      case 'admin':
+        return adminMenuItems;
+      case 'manager':
+        return managerMenuItems;
+      case 'sales_rep':
+        return salesRepMenuItems;
+      default:
+        return adminMenuItems;
+    }
+  };
+
   return (
     <aside
       className={`
-      ${isOpen ? 'block' : 'hidden'} 
-      lg:block 
-      w-64 
-      bg-white 
-      border-r 
-      border-gray-200 
-      flex-none
-      h-full
-      overflow-y-hidden
-    `}
+        ${isOpen ? 'block' : 'hidden'} 
+        lg:block 
+        w-64 
+        bg-white 
+        border-r 
+        border-gray-200 
+        flex-none
+        h-full
+        overflow-y-hidden
+      `}
     >
       <div className="p-4 h-full">
         <nav className="space-y-1">
-          {menuItems.map((item) => (
+          {renderMenuItems().map((item) => (
             <SidebarItem
               key={item.label}
               icon={item.icon}
