@@ -2,19 +2,15 @@ import { lazy, Suspense } from 'react';
 import App from '/src/App.jsx';
 import { AuthProvider, ProtectedRoute, AuthRoute } from './lib/AuthProvider';
 
-
-
-
-// Lazy load components
+// Lazy load
 const Dashboard = lazy(() => import('/src/pages/Dashboard'));
 const LoginPage = lazy(() => import('/src/pages/LoginPage'));
 const CrazyNotFoundPage = lazy(() => import('/src/pages/CrazyNotFoundPage'));
-const MultiStepRegistration = lazy(() => import('/src/components/MultiStepRegistration'));
-const  SuccessPage = lazy(() => import('/src/pages/SuccessPage'));
-const  StatsHeader = lazy(() => import('/src/components/StatsHeader'));
+const RegistrationPage = lazy(() => import('/src/pages/RegistrationPage'));
+const SuccessPage = lazy(() => import('/src/pages/SuccessPage'));
+const StatsHeader = lazy(() => import('/src/components/StatsHeader'));
 const LoadingSpinner = lazy(() => import('/src/components/LoadingSpinner'));
-const Profile = lazy(() => import('/src/pages/Profile'))
-
+const Profile = lazy(() => import('/src/pages/Profile'));
 
 const routes = [
   {
@@ -61,7 +57,7 @@ const routes = [
         element: (
           <AuthRoute>
             <Suspense fallback={<LoadingSpinner />}>
-              <MultiStepRegistration />
+              <RegistrationPage />
             </Suspense>
           </AuthRoute>
         ),

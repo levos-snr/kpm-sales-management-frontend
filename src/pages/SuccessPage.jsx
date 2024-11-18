@@ -18,7 +18,7 @@ const SuccessPage = () => {
           />
         </div>
 
-        {/* Success Icon */}
+        {/* Success  */}
         <div className="w-24 h-24 rounded-full bg-blue-500 flex items-center justify-center">
           <div className="w-20 h-20 rounded-full bg-white flex items-center justify-center">
             <Check className="w-10 h-10 text-blue-500" />

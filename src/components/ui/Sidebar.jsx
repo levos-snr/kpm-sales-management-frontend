@@ -11,12 +11,12 @@ import {
   AiOutlineEnvironment,
   AiOutlineSetting,
   AiOutlineQuestionCircle,
-  AiOutlineLogout
+  AiOutlineLogout,
 } from 'react-icons/ai';
 
 const Sidebar = () => {
   const [active, setActive] = useState('Dashboard');
-  
+
   const navItems = [
     { name: 'Dashboard', icon: <AiOutlineDashboard /> },
     { name: 'Team', icon: <AiOutlineTeam /> },
@@ -28,7 +28,7 @@ const Sidebar = () => {
     { name: 'Attendance', icon: <AiOutlineClockCircle /> },
     { name: 'Locations', icon: <AiOutlineEnvironment /> },
     { name: 'Settings', icon: <AiOutlineSetting /> },
-    { name: 'Support', icon: <AiOutlineQuestionCircle /> }
+    { name: 'Support', icon: <AiOutlineQuestionCircle /> },
   ];
 
   return (
@@ -54,10 +54,14 @@ const Sidebar = () => {
                 : 'hover:bg-gradient-to-r hover:from-blue-50 hover:to-blue-100'
             }`}
           >
-            <span className={`text-xl transition-transform transform group-hover:scale-110 ${active === item.name ? 'text-blue-700' : 'text-blue-600'}`}>
+            <span
+              className={`text-xl transition-transform transform group-hover:scale-110 ${active === item.name ? 'text-blue-700' : 'text-blue-600'}`}
+            >
               {item.icon}
             </span>
-            <a href="#" className="text-lg">{item.name}</a>
+            <a href="#" className="text-lg">
+              {item.name}
+            </a>
           </div>
         ))}
       </nav>

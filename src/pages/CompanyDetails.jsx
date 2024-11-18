@@ -19,7 +19,7 @@ const CompanyDetails = ({ formData, updateFormData, nextStep, prevStep }) => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
 
-  // Fetch companies
+  // companies
   const { data: companies, isLoading: isLoadingCompanies } = useQuery({
     queryKey: ['companies'],
     queryFn: fetchCompanies,

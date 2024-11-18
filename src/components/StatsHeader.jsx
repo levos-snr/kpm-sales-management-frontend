@@ -1,169 +1,199 @@
-'use client';
-
-import React, { useState } from 'react';
-import { Card, CardContent } from '@/components/ui/card';
+import React, { useState, useEffect } from 'react'
+import axios from 'axios'
 import {
-  MoreHorizontal,
-  ArrowUpRight,
-  ArrowDownRight,
-  Download,
-  Bell,
-  Eye,
-} from 'lucide-react';
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { motion } from 'framer-motion';
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import { Users, Target, DollarSign, ArrowUpRight, ArrowDownRight, Activity } from 'lucide-react'
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
 
-export default function Component() {
-  const [activeDropdown, setActiveDropdown] = useState(null);
-  const [hoveredCard, setHoveredCard] = useState(null);
+export default function AdminDashboard() {
+  const [timeFilter, setTimeFilter] = useState('week')
+  const [salesData, setSalesData] = useState({
+    totalSales: 0,
+    activeSalesReps: 0,
+    targetAchievement: 0,
+    totalOrders: 0,
+    salesTrends: [],
+    salesRepPerformance: []
+  })
+  const [loading, setLoading] = useState(true)
 
-  const stats = [
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        const [salesResponse, usersResponse, targetsResponse, ordersResponse] = await Promise.all([
+          axios.get('/sales-records'),
+          axios.get('/users?role=sales_rep'),
+          axios.get('/sales-targets'),
+          axios.get('/orders')
+        ])
+
+        const totalSales = salesResponse.data.reduce((sum, record) => sum + record.total_amount, 0)
+        const activeSalesReps = usersResponse.data.filter(user => user.status === 'active').length
+        const targetAchievement = targetsResponse.data.reduce((sum, target) => sum + (target.achieved_amount / target.target_amount) * 100, 0) / targetsResponse.data.length
+        const totalOrders = ordersResponse.data.length
+
+        const salesTrends = processSalesTrends(salesResponse.data, targetsResponse.data)
+        const salesRepPerformance = processSalesRepPerformance(salesResponse.data, usersResponse.data, targetsResponse.data, ordersResponse.data)
+
+        setSalesData({
+          totalSales,
+          activeSalesReps,
+          targetAchievement,
+          totalOrders,
+          salesTrends,
+          salesRepPerformance
+        })
+        setLoading(false)
+      } catch (error) {
+        console.error('Error fetching dashboard data:', error)
+        setLoading(false)
+      }
+    }
+
+    fetchDashboardData()
+  }, [timeFilter])
+
+  const processSalesTrends = (salesRecords, targets) => {
+    const trends = salesRecords.reduce((acc, record) => {
+      const month = new Date(record.visit_date).toLocaleString('default', { month: 'short' })
+      if (!acc[month]) {
+        acc[month] = { actual: 0, target: 0 }
+      }
+      acc[month].actual += record.total_amount
+      return acc
+    }, {})
+
+    targets.forEach(target => {
+      const month = new Date(target.start_date).toLocaleString('default', { month: 'short' })
+      if (trends[month]) {
+        trends[month].target = target.target_amount
+      }
+    })
+
+    return Object.entries(trends).map(([month, data]) => ({
+      month,
+      actual: data.actual,
+      target: data.target
+    }))
+  }
+
+  const processSalesRepPerformance = (salesRecords, users, targets, orders) => {
+    return users.map(user => {
+      const userSales = salesRecords.filter(record => record.user_id === user.id)
+      const userOrders = orders.filter(order => order.user_id === user.id)
+      const userTarget = targets.find(target => target.user_id === user.id)
+
+      return {
+        name: `${user.first_name} ${user.last_name}`,
+        sales: userSales.reduce((sum, record) => sum + record.total_amount, 0),
+        target: userTarget ? userTarget.target_amount : 0,
+        customers: new Set(userSales.map(record => record.customer_id)).size,
+        orders: userOrders.length,
+        commission: userSales.reduce((sum, record) => sum + (record.total_amount * 0.05), 0)
+      }
+    })
+  }
+
+  const getMetrics = () => [
     {
       title: 'Total Sales',
-      value: 'Ksh.528k',
-      change: '+2.5%',
+      value: `Ksh ${salesData.totalSales.toLocaleString()}`,
+      change: '+8.2%',
       changeType: 'positive',
-      badge: { text: 'NEW', color: 'blue' },
-      icon: ArrowUpRight,
+      icon: DollarSign
     },
     {
-      title: 'Todays Sales',
-      value: 'Ksh.87k',
-      change: '+1.2%',
+      title: 'Active Sales Reps',
+      value: salesData.activeSalesReps.toString(),
+      change: '+2',
       changeType: 'positive',
-      badge: { text: 'USED', color: 'orange' },
-      icon: ArrowUpRight,
+      icon: Users
     },
     {
-      title: 'Total Products',
-      value: '236',
-      change: '-0.8%',
-      changeType: 'negative',
-      icon: ArrowDownRight,
+      title: 'Target Achievement',
+      value: `${salesData.targetAchievement.toFixed(1)}%`,
+      change: '+5.4%',
+      changeType: 'positive',
+      icon: Target
     },
     {
-      title: 'Products Sold',
-      value: '22',
-      change: '+1.5%',
+      title: 'Total Orders',
+      value: salesData.totalOrders.toString(),
+      change: '+12.3%',
       changeType: 'positive',
-      icon: ArrowUpRight,
-    },
-    {
-      title: 'Todays Visitors',
-      value: 'Ksh.87k',
-      change: '+0.8%',
-      changeType: 'positive',
-      icon: ArrowUpRight,
-    },
-  ];
-
-  const handleDropdownOpen = (index) => {
-    setActiveDropdown(index);
-  };
-
-  const handleDropdownClose = () => {
-    setActiveDropdown(null);
-  };
-
-  const handleAction = (action, item) => {
-    switch (action) {
-      case 'view':
-        console.log('Viewing details for:', item.title);
-        break;
-      case 'export':
-        console.log('Exporting data for:', item.title);
-        break;
-      case 'alert':
-        console.log('Setting alert for:', item.title);
-        break;
-      default:
-        break;
+      icon: Activity
     }
-  };
+  ]
+
+  if (loading) {
+    return (
+      <div className="p-6 flex items-center justify-center">
+        <p>Loading dashboard data...</p>
+      </div>
+    )
+  }
 
   return (
-    <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 p-4 bg-white rounded-lg">
-      {stats.map((item, index) => (
-        <motion.div
-          key={index}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3, delay: index * 0.1 }}
-        >
-          <Card
-            className={`border border-gray-100 relative transition-all duration-200 ${
-              hoveredCard === index ? 'shadow-lg' : 'shadow-sm'
-            }`}
-            onMouseEnter={() => setHoveredCard(index)}
-            onMouseLeave={() => setHoveredCard(null)}
-          >
-            <DropdownMenu
-              onOpenChange={(open) =>
-                open ? handleDropdownOpen(index) : handleDropdownClose()
-              }
-            >
-              <DropdownMenuTrigger asChild>
-                <button
-                  className="absolute top-2 right-2 p-1.5 rounded-full hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 transition-colors duration-200"
-                  aria-label="More options"
-                >
-                  <MoreHorizontal className="h-4 w-4 text-gray-400" />
-                </button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-48">
-                <DropdownMenuItem onClick={() => handleAction('view', item)}>
-                  <Eye className="mr-2 h-4 w-4" />
-                  View Details
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => handleAction('export', item)}>
-                  <Download className="mr-2 h-4 w-4" />
-                  Export Data
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => handleAction('alert', item)}>
-                  <Bell className="mr-2 h-4 w-4" />
-                  Set Alert
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-            <CardContent className="p-4 pt-8 flex flex-col gap-1">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <span className="text-sm text-gray-600">{item.title}</span>
-                  {item.badge && (
-                    <span
-                      className={`px-2 py-0.5 text-xs bg-${item.badge.color}-100 text-${item.badge.color}-700 rounded-full font-medium`}
-                    >
-                      {item.badge.text}
-                    </span>
-                  )}
+    <div className="p-6 space-y-6">
+      <div className="flex justify-between items-center">
+        <div>
+          <h1 className="text-2xl font-bold">Sales Performance Dashboard</h1>
+          <p className="text-gray-500">Monitor your sales team&apos;s performance and metrics</p>
+        </div>
+        <Select value={timeFilter} onValueChange={setTimeFilter}>
+          <SelectTrigger className="w-32">
+            <SelectValue placeholder="Select period" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="day">Today</SelectItem>
+            <SelectItem value="week">This Week</SelectItem>
+            <SelectItem value="month">This Month</SelectItem>
+            <SelectItem value="quarter">This Quarter</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        {getMetrics().map((metric, index) => (
+          <Card key={index}>
+            <CardContent className="p-6">
+              <div className="flex justify-between items-start">
+                <div className="space-y-2">
+                  <p className="text-sm text-gray-500">{metric.title}</p>
+                  <p className="text-2xl font-bold">{metric.value}</p>
+                </div>
+                <div className={`p-2 rounded-full ${metric.changeType === 'positive' ? 'bg-green-100' : 'bg-red-100'}`}>
+                  <metric.icon className="text-xl" />
                 </div>
               </div>
-              <div className="flex items-baseline gap-2 mt-1">
-                <span className="text-2xl font-semibold tracking-tight">
-                  {item.value}
-                </span>
-                <div
-                  className={`flex items-center text-xs ${
-                    item.changeType === 'positive'
-                      ? 'text-green-600'
-                      : 'text-red-600'
-                  }`}
-                >
-                  <item.icon className="h-3 w-3" />
-                  <span>{item.change}</span>
-                </div>
-              </div>
+              <p className={`text-sm font-medium ${metric.changeType === 'positive' ? 'text-green-600' : 'text-red-600'}`}>
+                {metric.changeType === 'positive' ? <ArrowUpRight /> : <ArrowDownRight />}
+                {metric.change}
+              </p>
             </CardContent>
           </Card>
-        </motion.div>
-      ))}
+        ))}
+      </div>
     </div>
-  );
+  )
 }

@@ -6,9 +6,7 @@ const Header = () => {
   return (
     <header className="flex items-center justify-between px-6 py-4 bg-gradient-to-r from-gray-50 to-white shadow-lg rounded-xl">
       {/* Logo or App Title */}
-      <div className="text-xl font-semibold text-gray-900">
-        Fieldsale
-      </div>
+      <div className="text-xl font-semibold text-gray-900">Fieldsale</div>
 
       {/* Search Bar */}
       <div className="flex items-center bg-gray-100 px-4 py-2 rounded-full w-1/3 focus-within:ring-2 focus-within:ring-blue-500 transition-all duration-200">

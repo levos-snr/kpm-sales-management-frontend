@@ -4,22 +4,94 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
-import { Separator } from '@/components/ui/separator';
-import { Eye, EyeOff, Mail, Apple, ArrowRight, Check } from 'lucide-react';
-import { FaGithub } from 'react-icons/fa6';
+import { Eye, EyeOff, Building2, Users, BarChart3 } from 'lucide-react';
+import { registerAdminManager } from '../api/auth';
+import { toast } from 'react-toastify';
+import useStore from '../store';
 
-const RegistrationPage = ({ formData, updateFormData, nextStep }) => {
+const RegistrationPage = () => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [currentStep, setCurrentStep] = useState(1);
+  
+  // Using the store directly
+  const { setUser, setAccessToken, setRefreshToken } = useStore();
+  
+  const [formData, setFormData] = useState({
+    first_name: '',
+    last_name: '',
+    email: '',
+    password: '',
+    phone_number: '',
+    company_name: '',
+    company_code: '',
+    registration_number: '',
+    role: 'manager',
+    designation: '',
+    id_number: ''
+  });
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    updateFormData({ [name]: value });
+    setFormData(prev => ({
+      ...prev,
+      [e.target.name]: e.target.value
+    }));
   };
 
-  const handleSubmit = (e) => {
+  const validateForm = () => {
+    const requiredFields = currentStep === 1 
+      ? ['first_name', 'last_name', 'email', 'password', 'phone_number']
+      : ['company_name', 'company_code', 'registration_number'];
+    
+    const missingFields = requiredFields.filter(field => !formData[field]);
+    
+    if (missingFields.length > 0) {
+      toast.error(`Please fill in all required fields: ${missingFields.join(', ')}`);
+      return false;
+    }
+    
+    if (currentStep === 1 && !formData.email.includes('@')) {
+      toast.error('Please enter a valid email address');
+      return false;
+    }
+    
+    return true;
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    nextStep();
+    
+    if (!validateForm()) {
+      return;
+    }
+    
+    setIsLoading(true);
+    
+    try {
+      const response = await registerAdminManager(formData);
+      const { user, access_token, refresh_token } = response;
+      
+      // Update store with user data and tokens
+      setUser(user);
+      setAccessToken(access_token);
+      setRefreshToken(refresh_token);
+      
+      toast.success('Registration successful! Welcome to FieldSale.');
+      navigate('/dashboard');
+    } catch (error) {
+      const errorMessage = error.response?.data?.error || 'Registration failed. Please try again.';
+      toast.error(errorMessage);
+      console.error('Registration error:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleNextStep = () => {
+    if (validateForm()) {
+      setCurrentStep(2);
+    }
   };
 
   const Features = ({ icon, title, description }) => (
@@ -34,9 +106,168 @@ const RegistrationPage = ({ formData, updateFormData, nextStep }) => {
     </div>
   );
 
+  const renderForm = () => {
+    if (currentStep === 1) {
+      return (
+        <div className="space-y-4">
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="first_name">First Name *</Label>
+              <Input
+                id="first_name"
+                name="first_name"
+                value={formData.first_name}
+                onChange={handleChange}
+                placeholder="John"
+                className="h-12"
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="last_name">Last Name *</Label>
+              <Input
+                id="last_name"
+                name="last_name"
+                value={formData.last_name}
+                onChange={handleChange}
+                placeholder="Doe"
+                className="h-12"
+                required
+              />
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="email">Email Address *</Label>
+            <Input
+              id="email"
+              name="email"
+              type="email"
+              value={formData.email}
+              onChange={handleChange}
+              placeholder="john@example.com"
+              className="h-12"
+              required
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="password">Password *</Label>
+            <div className="relative">
+              <Input
+                id="password"
+                name="password"
+                type={showPassword ? 'text' : 'password'}
+                value={formData.password}
+                onChange={handleChange}
+                placeholder="Create a strong password"
+                className="h-12 pr-12"
+                required
+              />
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                className="absolute right-2 top-1/2 -translate-y-1/2"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? (
+                  <EyeOff className="h-4 w-4 text-gray-500" />
+                ) : (
+                  <Eye className="h-4 w-4 text-gray-500" />
+                )}
+              </Button>
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="phone_number">Phone Number *</Label>
+            <Input
+              id="phone_number"
+              name="phone_number"
+              type="tel"
+              value={formData.phone_number}
+              onChange={handleChange}
+              placeholder="+1234567890"
+              className="h-12"
+              required
+            />
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <div className="space-y-4">
+        <div className="space-y-2">
+          <Label htmlFor="company_name">Company Name *</Label>
+          <Input
+            id="company_name"
+            name="company_name"
+            value={formData.company_name}
+            onChange={handleChange}
+            placeholder="Your Company Name"
+            className="h-12"
+            required
+          />
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <Label htmlFor="company_code">Company Code *</Label>
+            <Input
+              id="company_code"
+              name="company_code"
+              value={formData.company_code}
+              onChange={handleChange}
+              placeholder="ABC123"
+              className="h-12"
+              required
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="registration_number">Registration Number *</Label>
+            <Input
+              id="registration_number"
+              name="registration_number"
+              value={formData.registration_number}
+              onChange={handleChange}
+              placeholder="REG123456"
+              className="h-12"
+              required
+            />
+          </div>
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="designation">Designation</Label>
+          <Input
+            id="designation"
+            name="designation"
+            value={formData.designation}
+            onChange={handleChange}
+            placeholder="CEO, Sales Director, etc."
+            className="h-12"
+          />
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="id_number">ID Number</Label>
+          <Input
+            id="id_number"
+            name="id_number"
+            value={formData.id_number}
+            onChange={handleChange}
+            placeholder="Government ID Number"
+            className="h-12"
+          />
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="min-h-screen flex flex-col lg:flex-row">
-      {/* Left Section - Branding */}
       <div className="w-full lg:w-1/2 bg-gradient-to-br from-blue-600 to-indigo-800 relative overflow-hidden">
         <div className="absolute inset-0">
           <div className="absolute inset-0 bg-black/20" />
@@ -55,48 +286,39 @@ const RegistrationPage = ({ formData, updateFormData, nextStep }) => {
           <div className="my-auto space-y-12">
             <div>
               <h2 className="text-4xl font-bold text-white mb-4">
-                Join Our Platform
+                Transform Your Sales Management
               </h2>
               <p className="text-xl text-white/90">
-                Create an account to start your journey
+                Join thousands of businesses managing their sales teams effectively
               </p>
             </div>
 
             <div className="space-y-8">
               <Features
-                icon={<Check className="w-6 h-6 text-white" />}
-                title="Smart Analytics"
-                description="Get real-time insights into your business performance"
+                icon={<Users className="w-6 h-6 text-white" />}
+                title="Team Management"
+                description="Manage your sales representatives efficiently"
               />
               <Features
-                icon={<Check className="w-6 h-6 text-white" />}
-                title="Team Collaboration"
-                description="Work seamlessly with your team members"
+                icon={<BarChart3 className="w-6 h-6 text-white" />}
+                title="Performance Analytics"
+                description="Track sales performance and team metrics"
               />
               <Features
-                icon={<Check className="w-6 h-6 text-white" />}
-                title="Secure Platform"
-                description="Enterprise-grade security for your data"
+                icon={<Building2 className="w-6 h-6 text-white" />}
+                title="Multi-branch Support"
+                description="Manage multiple locations from one platform"
               />
-            </div>
-          </div>
-
-          <div className="mt-auto">
-            <div className="flex space-x-3">
-              <div className="w-8 h-1 rounded-full bg-white/90" />
-              <div className="w-2 h-1 rounded-full bg-white/30" />
-              <div className="w-2 h-1 rounded-full bg-white/30" />
             </div>
           </div>
         </div>
       </div>
 
-      {/* Right Section - Registration Form */}
       <div className="w-full lg:w-1/2 bg-gray-50">
         <div className="h-full flex flex-col">
           <div className="p-6 flex justify-end space-x-4">
             <Button variant="ghost" size="sm">
-              Already have an account?{' '}
+              Already registered?
             </Button>
             <Button
               size="sm"
@@ -112,128 +334,45 @@ const RegistrationPage = ({ formData, updateFormData, nextStep }) => {
               <CardContent>
                 <div className="mb-8">
                   <h2 className="text-2xl font-bold text-gray-900">
-                    Create Account
+                    {currentStep === 1 ? 'Create Account' : 'Company Details'}
                   </h2>
                   <p className="text-gray-600 mt-2">
-                    Please enter your details
+                    Step {currentStep} of 2 {currentStep === 1 ? '- Personal Information' : '- Company Information'}
                   </p>
                 </div>
 
                 <form onSubmit={handleSubmit} className="space-y-6">
-                  <div className="space-y-4">
-                    <div className="space-y-2">
-                      <Label
-                        htmlFor="first_name"
-                        className="text-sm font-medium"
+                  {renderForm()}
+
+                  <div className="flex space-x-4">
+                    {currentStep === 2 && (
+                      <Button
+                        type="button"
+                        className="w-full h-12"
+                        variant="outline"
+                        onClick={() => setCurrentStep(1)}
                       >
-                        First Name
-                      </Label>
-                      <Input
-                        id="first_name"
-                        name="first_name"
-                        type="text"
-                        value={formData.first_name}
-                        onChange={handleChange}
-                        placeholder="John"
-                        className="h-12 border-gray-200 focus:border-blue-500 focus:ring-blue-500"
-                        required
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label
-                        htmlFor="last_name"
-                        className="text-sm font-medium"
+                        Back
+                      </Button>
+                    )}
+                    
+                    {currentStep === 1 ? (
+                      <Button
+                        type="button"
+                        className="w-full h-12 bg-blue-600 text-white hover:bg-blue-700"
+                        onClick={handleNextStep}
                       >
-                        Last Name
-                      </Label>
-                      <Input
-                        id="last_name"
-                        name="last_name"
-                        type="text"
-                        value={formData.last_name}
-                        onChange={handleChange}
-                        placeholder="Doe"
-                        className="h-12 border-gray-200 focus:border-blue-500 focus:ring-blue-500"
-                        required
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="email" className="text-sm font-medium">
-                        Email Address
-                      </Label>
-                      <Input
-                        id="email"
-                        name="email"
-                        type="email"
-                        value={formData.email}
-                        onChange={handleChange}
-                        placeholder="john@example.com"
-                        className="h-12 border-gray-200 focus:border-blue-500 focus:ring-blue-500"
-                        required
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="password" className="text-sm font-medium">
-                        Password
-                      </Label>
-                      <div className="relative">
-                        <Input
-                          id="password"
-                          name="password"
-                          type={showPassword ? 'text' : 'password'}
-                          value={formData.password}
-                          onChange={handleChange}
-                          placeholder="Enter your password"
-                          className="h-12 border-gray-200 focus:border-blue-500 focus:ring-blue-500 pr-12"
-                          required
-                        />
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="sm"
-                          className="absolute right-2 top-1/2 -translate-y-1/2 hover:bg-transparent"
-                          onClick={() => setShowPassword(!showPassword)}
-                        >
-                          {showPassword ? (
-                            <EyeOff className="h-4 w-4 text-gray-500" />
-                          ) : (
-                            <Eye className="h-4 w-4 text-gray-500" />
-                          )}
-                        </Button>
-                      </div>
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label
-                        htmlFor="phone_number"
-                        className="text-sm font-medium"
+                        Next Step
+                      </Button>
+                    ) : (
+                      <Button
+                        type="submit"
+                        className="w-full h-12 bg-blue-600 text-white hover:bg-blue-700"
+                        disabled={isLoading}
                       >
-                        Phone Number
-                      </Label>
-                      <Input
-                        id="phone_number"
-                        name="phone_number"
-                        type="tel"
-                        value={formData.phone_number}
-                        onChange={handleChange}
-                        placeholder="+1234567890"
-                        className="h-12 border-gray-200 focus:border-blue-500 focus:ring-blue-500"
-                        required
-                      />
-                    </div>
-
-                    <Button
-                      type="submit"
-                      className="w-full h-12 bg-blue-600 text-white hover:bg-blue-700 transition-colors"
-                    >
-                      <span className="flex items-center justify-center">
-                        Continue
-                        <ArrowRight className="ml-2 w-4 h-4" />
-                      </span>
-                    </Button>
+                        {isLoading ? 'Creating Account...' : 'Create Account'}
+                      </Button>
+                    )}
                   </div>
                 </form>
               </CardContent>

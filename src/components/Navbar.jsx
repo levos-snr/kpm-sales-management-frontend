@@ -3,11 +3,11 @@ import { Bell, Menu, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import UserAvatarMenu from './UserAvatarMenu';
+import NotificationLog from './NotificationLog';
 import useStore from '../store';
 
 const Navbar = ({ setSidebarOpen, sidebarOpen }) => {
   const { user, setUser } = useStore();
-  
 
   useEffect(() => {
     const unsubscribe = useStore.subscribe(
@@ -50,10 +50,8 @@ const Navbar = ({ setSidebarOpen, sidebarOpen }) => {
                 </div>
               </div>
             </div>
-            <div className="flex items-center ml-4">
-              <Button variant="ghost" size="icon">
-                <Bell className="h-5 w-5" />
-              </Button>
+            <div className="flex items-center ml-4 gap-3">
+                <NotificationLog />
               <UserAvatarMenu user={user} />
             </div>
           </div>

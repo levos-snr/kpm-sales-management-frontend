@@ -4,10 +4,8 @@ import { getCurrentUser } from '../api/auth';
 import useStore from '../store';
 import { toast } from 'react-toastify';
 
-// Create context
 const AuthContext = createContext(null);
 
-// Custom hook to use auth context
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
@@ -16,7 +14,6 @@ export const useAuth = () => {
   return context;
 };
 
-// Auth Provider component
 export const AuthProvider = ({ children }) => {
   const { user, setUser, accessToken, clearAuth } = useStore();
   const [isLoading, setIsLoading] = React.useState(true);
@@ -52,13 +49,13 @@ export const AuthProvider = ({ children }) => {
   );
 };
 
-// Protected Route component
+// protected Route component
 export const ProtectedRoute = ({ children }) => {
   const { isAuthenticated, isLoading } = useAuth();
   const location = useLocation();
 
   if (isLoading) {
-    return <div>Loading...</div>; // Or your loading component
+    return <div>Loading...</div>;
   }
 
   if (!isAuthenticated) {
@@ -68,17 +65,19 @@ export const ProtectedRoute = ({ children }) => {
   return children;
 };
 
-// Auth Route component (for login/register pages)
+// auth Route component (for login/register pages)
 export const AuthRoute = ({ children }) => {
   const { isAuthenticated, isLoading } = useAuth();
   const location = useLocation();
 
   if (isLoading) {
-    return <div>Loading...</div>; // Or your loading component
+    return <div>Loading...</div>;
   }
 
   if (isAuthenticated) {
-    return <Navigate to={location.state?.from?.pathname || '/dashboard'} replace />;
+    return (
+      <Navigate to={location.state?.from?.pathname || '/dashboard'} replace />
+    );
   }
 
   return children;

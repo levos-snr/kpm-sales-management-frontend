@@ -67,7 +67,9 @@ const Profile = () => {
             <tbody>
               {users.map((user) => (
                 <tr key={user.id} className="border-b">
-                  <td className="p-2">{user.first_name} {user.last_name}</td>
+                  <td className="p-2">
+                    {user.first_name} {user.last_name}
+                  </td>
                   <td className="p-2">{user.email}</td>
                   <td className="p-2">{user.phone_number}</td>
                   <td className="p-2">{user.role}</td>
@@ -125,7 +127,10 @@ const Profile = () => {
                         id="phone_number"
                         value={newUser.phone_number}
                         onChange={(e) =>
-                          setNewUser({ ...newUser, phone_number: e.target.value })
+                          setNewUser({
+                            ...newUser,
+                            phone_number: e.target.value,
+                          })
                         }
                       />
                     </div>

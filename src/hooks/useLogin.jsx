@@ -13,7 +13,8 @@ const useLogin = () => {
       navigate('/dashboard');
     },
     onError: (error) => {
-      const errorMessage = error.response?.data?.error || 'An error occurred while logging in';
+      const errorMessage =
+        error.response?.data?.error || 'An error occurred while logging in';
       toast.error(errorMessage);
     },
   });

@@ -1,14 +1,14 @@
 import React from 'react';
 import DashboardStats from './DashboardStats';
 import { DashboardCharts } from './DashboardCharts';
-import { RecentActivity } from './RecentActivity';
+import StatsHeader from '../components/Farhiyasta';
 
 export const DashboardContent = () => {
   return (
     <>
-      <DashboardStats />
+      {/* <DashboardStats /> */}
+      <StatsHeader />
       <DashboardCharts />
-      <RecentActivity />
     </>
   );
 };

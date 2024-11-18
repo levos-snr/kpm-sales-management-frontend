@@ -17,8 +17,7 @@ const LoginPage = () => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [session, setSession] = useState(null);
-  
-  
+
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -26,7 +25,7 @@ const LoginPage = () => {
   const { login, isLoading } = useLogin();
 
   useEffect(() => {
-    // Get initial session
+    //  session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       if (session) {
@@ -59,15 +58,13 @@ const LoginPage = () => {
       [name]: value,
     }));
   };
-  
-  
 
   const handleSignOut = async () => {
     try {
       const { error } = await supabase.auth.signOut();
       if (error) {
         console.error('Error signing out:', error.message);
-        // You might want to add toast notification here
+        // toast notification
       } else {
         navigate('/');
       }
@@ -87,7 +84,7 @@ const LoginPage = () => {
 
       if (error) {
         console.error(`Error signing in with ${provider}:`, error.message);
-        // You might want to add toast notification here
+        // toast notification
       }
     } catch (error) {
       console.error('Error:', error);
@@ -106,7 +103,7 @@ const LoginPage = () => {
     </div>
   );
 
-  // If user is logged in, show logged in state
+  //  logged in state
   if (session) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">

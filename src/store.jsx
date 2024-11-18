@@ -10,7 +10,8 @@ const useStore = create(
       setUser: (user) => set({ user }),
       setAccessToken: (accessToken) => set({ accessToken }),
       setRefreshToken: (refreshToken) => set({ refreshToken }),
-      clearAuth: () => set({ user: null, accessToken: null, refreshToken: null }),
+      clearAuth: () =>
+        set({ user: null, accessToken: null, refreshToken: null }),
     }),
     {
       name: 'auth-storage',

@@ -22,7 +22,6 @@ const UserAvatarMenu = () => {
     navigate('/');
   };
 
-  // Get user initials for avatar fallback
   const getInitials = (email) => {
     if (!email) return 'U';
     return email
