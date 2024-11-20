@@ -1,23 +1,26 @@
 import React from 'react';
 import { DashboardContent } from './DashboardContent';
-import TeamContent  from './TeamContent';
+import TeamContent from './TeamContent';
 import ProductsContent from './ProductsContent';
 import LocationsContent from './LocationsContent';
 import TasksContent from './TasksContent';
-import SalesrepDashboard from './salerepDash';
 import Salesinvntory from './Salesinvntory';
+import SalesShedule from './SalesShedule';
+import SalerepPoducts from './SalerepPoducts';
+import CustomersContent from './CustomerDasbord';
+import Orders from './Orders';
 import useStore from '../store';
-
+import ReportSalesrep from './ReportSalesrep';
 
 export const TabContent = ({ activeTab }) => {
   const { user } = useStore();
 
   const renderContent = () => {
     switch (activeTab) {
-      case 'home':
-        return <SalesrepDashboard userRole={user.role} />;
       case 'dashboard':
-        return <DashboardContent userRole={user.role} />;
+        return user.role === 'sales_rep' ? 
+          <ReportSalesrep userRole={user.role} /> : 
+          <DashboardContent userRole={user.role} />;
       case 'team':
         return <TeamContent userRole={user.role} />;
       case 'products':
@@ -28,15 +31,26 @@ export const TabContent = ({ activeTab }) => {
         return <TasksContent userRole={user.role} />;
       case 'inventory':
         return <Salesinvntory userRole={user.role} />;
+      case 'shedule':
+        return <SalesShedule userRole={user.role} />;
+      case 'catalog':
+        return <SalerepPoducts userRole={user.role} />;
+      case 'customers':
+        return <CustomersContent userRole={user.role} />;
+      case 'orders':
+        return <Orders userRole={user.role} />;
       default:
-        return <DashboardContent userRole={user.role} />;
-        
+        return user.role === 'sales_rep' ? 
+          <ReportSalesrep userRole={user.role} /> : 
+          <DashboardContent userRole={user.role} />;
     }
   };
 
   return (
-    <div className="flex-1 p-6 lg:ml-10  ">
-      <div className="max-w-7xl mx-auto">{renderContent()}</div>
+    <div className="h-full">
+      <div className="max-w-7xl mx-auto">
+        {renderContent()}
+      </div>
     </div>
   );
 };

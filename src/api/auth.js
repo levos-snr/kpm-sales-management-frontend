@@ -1,14 +1,12 @@
 import axios from 'axios';
 import useStore from '../store';
 
-// Configure axios defaults
 const isDev = import.meta.env.MODE === 'development';
 axios.defaults.baseURL = isDev
   ? import.meta.env.VITE_API_BASE_URL_DEV
   : import.meta.env.VITE_API_BASE_URL_PROD;
 axios.defaults.headers.common['Content-Type'] = 'application/json';
 
-// Add axios interceptor to add token to requests
 axios.interceptors.request.use(
   (config) => {
     const accessToken = useStore.getState().accessToken;
@@ -20,7 +18,6 @@ axios.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// Add axios interceptor to handle token refresh
 axios.interceptors.response.use(
   (response) => response,
   async (error) => {
@@ -53,7 +50,6 @@ axios.interceptors.response.use(
   }
 );
 
-// Auth endpoints
 export const getCurrentUser = async () => {
   const response = await axios.get('/auth/me');
   return response.data;
@@ -97,7 +93,6 @@ export const logoutUser = async () => {
   }
 };
 
-// User Management endpoints
 export const getUserList = async () => {
   const response = await axios.get('/users');
   return response.data;
@@ -117,7 +112,7 @@ export const updateUser = async (userId, userData) => {
 export const getTasks = async () => {
   try {
     const response = await axios.get('/tasks');
-    return response;  // Return the entire response to match the expected structure
+    return response;  
   } catch (error) {
     console.error('Error fetching tasks:', error);
     throw error;

@@ -7,9 +7,11 @@ const useStore = create(
       user: null,
       accessToken: null,
       refreshToken: null,
+      activeTab: 'dashboard', // Add this line
       setUser: (user) => set({ user }),
       setAccessToken: (accessToken) => set({ accessToken }),
       setRefreshToken: (refreshToken) => set({ refreshToken }),
+      setActiveTab: (activeTab) => set({ activeTab }), // Add this line
       clearAuth: () =>
         set({ user: null, accessToken: null, refreshToken: null }),
     }),
@@ -20,6 +22,7 @@ const useStore = create(
         user: state.user,
         accessToken: state.accessToken,
         refreshToken: state.refreshToken,
+        activeTab: state.activeTab, // Add this line
       }),
     }
   )

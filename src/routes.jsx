@@ -3,7 +3,7 @@ import App from '/src/App.jsx';
 import { AuthProvider, ProtectedRoute, AuthRoute } from './lib/AuthProvider';
 
 // Lazy load
-const Dashboard = lazy(() => import('/src/pages/Dashboard'));
+const Layout = lazy(() => import('/src/components/Layout'));
 const LoginPage = lazy(() => import('/src/pages/LoginPage'));
 const CrazyNotFoundPage = lazy(() => import('/src/pages/CrazyNotFoundPage'));
 const RegistrationPage = lazy(() => import('/src/pages/RegistrationPage'));
@@ -47,7 +47,7 @@ const routes = [
         element: (
           <ProtectedRoute>
             <Suspense fallback={<LoadingSpinner />}>
-              <Dashboard />
+              <Layout />
             </Suspense>
           </ProtectedRoute>
         ),

@@ -1,6 +1,5 @@
 import axios from 'axios';
 
-// Configure axios defaults
 const isDev = import.meta.env.MODE === 'development';
 axios.defaults.baseURL = isDev
   ? import.meta.env.VITE_API_BASE_URL_DEV

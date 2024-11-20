@@ -15,7 +15,6 @@ const RegistrationPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
   
-  // Using the store directly
   const { setUser, setAccessToken, setRefreshToken } = useStore();
   
   const [formData, setFormData] = useState({
@@ -72,7 +71,6 @@ const RegistrationPage = () => {
       const response = await registerAdminManager(formData);
       const { user, access_token, refresh_token } = response;
       
-      // Update store with user data and tokens
       setUser(user);
       setAccessToken(access_token);
       setRefreshToken(refresh_token);

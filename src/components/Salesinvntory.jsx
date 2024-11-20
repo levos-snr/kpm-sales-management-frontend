@@ -1,6 +1,4 @@
-"use client"
-
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect,useMemo  } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -14,11 +12,10 @@ import { Search, Plus, Edit2, BarChart2 } from 'lucide-react'
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
 import { getProducts } from '../api/product'
 
-// Mock API functions (replace with actual API calls)
 
 
 const fetchRecentSales = async () => {
-  // Simulated API call
+  // Simulation
   return [
     { id: 1, product_id: 1, quantity: 5, total_amount: 54.95, date: '2024-11-17' },
     { id: 2, product_id: 2, quantity: 10, total_amount: 59.90, date: '2024-11-16' },
@@ -26,8 +23,10 @@ const fetchRecentSales = async () => {
   ]
 }
 
+
+
 const updateStock = async ({ productId, newStock }) => {
-  // Simulated API call
+
   console.log(`Updating stock for product ${productId} to ${newStock}`)
   return { success: true }
 }
@@ -40,13 +39,15 @@ export default function InventoryDashboard() {
 
   const queryClient = useQueryClient()
 
-  // Add the products query
+  //  products queri
   const { data: productsData , isLoading: isLoadingProducts } = useQuery({
     queryKey: ['products'],
     queryFn: getProducts,
     select: (data) => data.products || [],
     staleTime: 1000 * 60 * 5,
   })
+  
+
 
 
   const { data: recentSales, isLoading: isLoadingSales } = useQuery({
@@ -154,7 +155,7 @@ export default function InventoryDashboard() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Recent Sales</CardTitle>
+          <CardTitle>Recent Products</CardTitle>
         </CardHeader>
         <CardContent>
           <Table>

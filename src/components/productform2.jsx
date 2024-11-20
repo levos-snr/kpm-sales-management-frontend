@@ -41,21 +41,18 @@ export default function ProductForm({
   const validateForm = () => {
     const newErrors = []
 
-    // Name validation (required, max 100 chars)
     if (!formData.name.trim()) {
       newErrors.push('Name is required')
     } else if (formData.name.length > 100) {
       newErrors.push('Name must be less than 100 characters')
     }
 
-    // SKU validation (required, max 50 chars)
     if (!formData.sku.trim()) {
       newErrors.push('SKU is required')
     } else if (formData.sku.length > 50) {
       newErrors.push('SKU must be less than 50 characters')
     }
 
-    // Unit price validation (required, positive, max 2 decimals)
     const price = parseFloat(formData.unit_price)
     if (!formData.unit_price) {
       newErrors.push('Unit price is required')
@@ -65,12 +62,10 @@ export default function ProductForm({
       newErrors.push('Unit price cannot have more than 2 decimal places')
     }
 
-    // Stock threshold validation (optional, positive integer)
     if (formData.stock_threshold && parseInt(formData.stock_threshold) < 0) {
       newErrors.push('Stock threshold cannot be negative')
     }
 
-    // Description validation (optional, max 1000 chars)
     if (formData.description && formData.description.length > 1000) {
       newErrors.push('Description must be less than 1000 characters')
     }

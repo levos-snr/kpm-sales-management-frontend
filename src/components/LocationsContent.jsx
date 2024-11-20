@@ -97,7 +97,6 @@ const TaskManagement = () => {
     const matchesSearch = task.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
                           task.description.toLowerCase().includes(searchQuery.toLowerCase());
     
-    // Filter tasks based on user role
     const isUserTask = 
       currentUser.role === 'admin' || 
       (currentUser.role === 'manager' && task.assigned_by === currentUser.id) ||
@@ -180,7 +179,7 @@ const TaskManagement = () => {
               task={task} 
               onUpdate={handleUpdateTask}
               onDelete={handleDeleteTask}
-              currentUser={currentUser}  // Pass currentUser as prop
+              currentUser={currentUser}  
             />
           ))}
         </div>
@@ -201,7 +200,7 @@ const TaskCard = ({ task, onUpdate, onDelete, currentUser }) => {
   });
 
   if (!currentUser) {
-    return null; // Or some fallback UI
+    return null; 
   }
 
   const getPriorityColor = (priority) => {

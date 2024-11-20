@@ -14,7 +14,6 @@ import {
 import { registerSalesRep } from '../api/auth'
 import useStore from '../store'
 
-// Main form component for sales rep registration
 const SalesRepRegistrationForm = ({ onShowTargetsDialog }) => {
   const [formData, setFormData] = useState({
     first_name: '',
@@ -113,7 +112,6 @@ const SalesRepRegistrationForm = ({ onShowTargetsDialog }) => {
   )
 }
 
-// Dialog component for targets and territory assignment
 const TargetsAndTerritoryDialog = ({ isOpen, onClose, basicInfo, onSuccess }) => {
   const currentUser = useStore((state) => state.user)
   const [targetData, setTargetData] = useState({
@@ -230,7 +228,6 @@ const TargetsAndTerritoryDialog = ({ isOpen, onClose, basicInfo, onSuccess }) =>
       )
     }
     
-    // Parent component that will be imported in TeamContent
     export const SalesRepRegistration = ({ onSuccess }) => {
       const [showTargetsDialog, setShowTargetsDialog] = useState(false)
       const [basicInfo, setBasicInfo] = useState(null)

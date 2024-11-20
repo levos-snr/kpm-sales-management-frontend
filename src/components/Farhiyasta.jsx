@@ -24,7 +24,6 @@ export default function ComponentStat() {
   const [hoveredCard, setHoveredCard] = useState(null);
   
   
-  // Add the products query
   const { data: productsData } = useQuery({
     queryKey: ['products'],
     queryFn: getProducts,

@@ -48,7 +48,7 @@ export default function ProductContent() {
     status: 'active',
   })
 
-  // Query for fetching products
+  // Query 4 products
   const { 
     data: productsData, 
     isLoading, 
@@ -60,7 +60,7 @@ export default function ProductContent() {
     staleTime: 1000 * 60 * 5, 
   })
 
-  // Mutation for creating products
+  // creating products
   const createMutation = useMutation({
     mutationFn: createProduct,
     onSuccess: () => {
@@ -72,7 +72,7 @@ export default function ProductContent() {
     }
   })
 
-  // Mutation for updating products
+  //  updating 3theproducts
   const updateMutation = useMutation({
     mutationFn: ({ id, data }) => updateProduct(id, data),
     onSuccess: () => {
@@ -84,7 +84,7 @@ export default function ProductContent() {
     }
   })
 
-  // Mutation for deleting products
+  //  deleting - products
   const deleteMutation = useMutation({
     mutationFn: deleteProduct,
     onSuccess: () => {
@@ -130,7 +130,7 @@ export default function ProductContent() {
 
   const canManageProducts = currentUser?.role === 'admin' || currentUser?.role === 'manager'
 
-  // Loading states management
+  //  states management 3oad
   const isOperationLoading = createMutation.isPending || updateMutation.isPending || deleteMutation.isPending
   const operationError = createMutation.error || updateMutation.error || deleteMutation.error
 

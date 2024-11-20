@@ -23,7 +23,6 @@ import useStore from '../store';
 import { getUserList, deleteUser } from '../api/auth';
 import { SalesRepRegistration } from './saleregistration';
 
-// Loading component for Suspense fallback
 const LoadingState = () => (
   <TableRow>
     <TableCell colSpan={8} className="text-center py-4">
@@ -32,7 +31,6 @@ const LoadingState = () => (
   </TableRow>
 );
 
-// Error component for error boundary
 const ErrorState = ({ error }) => (
   <TableRow>
     <TableCell colSpan={8} className="text-center py-4 text-red-500">
@@ -50,7 +48,6 @@ export default function TeamContent() {
   const queryClient = useQueryClient();
   const entriesPerPage = 5;
 
-  // React Query hooks with proper error handling and suspense
   const { data: employeesData, error } = useQuery({
     queryKey: ['employees'],
     queryFn: getUserList,
