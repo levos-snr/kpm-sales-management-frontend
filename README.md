@@ -29,7 +29,7 @@ bun install
 - Run the project
 ```
 bun run dev
-
+```
 2.Backend Installation
 (i)
 - Github Repo clone
