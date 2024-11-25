@@ -6,6 +6,7 @@ import Sidebar from './Sidebar';
 import { TabContent } from './TabContent';
 import useStore from '../store';
 import Navbar from './Navbar';
+import logo from "../assets/logo.png"
 
 const Layout = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -25,7 +26,7 @@ const Layout = () => {
 
   return (
     <div className="flex h-screen bg-gray-50">
-      {/* Sidebar with full height - Removed border-r */}
+
       <aside 
         className={`
           fixed lg:relative
@@ -36,9 +37,15 @@ const Layout = () => {
           bg-white
         `}
       >
-        {/* Logo Section */}
-        <div className="h-16 flex items-center justify-center">
-          <h1 className="text-xl font-bold text-gray-800">FIELDSALE</h1>
+
+        <div className="h-16 flex items-center justify-center ">
+          <img
+            src={logo}
+            alt="FieldSale Logo"
+            height={120}
+            width={120}
+            className="pt-4"
+          />
         </div>
         
         {/* Sidebar Content */}

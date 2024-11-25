@@ -101,6 +101,11 @@ export default function OrderDashboard() {
   const [editingOrder, setEditingOrder] = useState(null)
   const queryClient = useQueryClient()
   const { theme, setTheme } = useTheme()
+  
+  const [customerSearch, setCustomerSearch] = useState('')
+  const [productSearch, setProductSearch] = useState('')
+  const [selectedCustomerDetails, setSelectedCustomerDetails] = useState(null)
+  const [visibleProducts, setVisibleProducts] = useState(6)
 
   const { data: customers = [], isLoading: isLoadingCustomers } = useQuery({
     queryKey: ['customers'],
@@ -241,10 +246,20 @@ export default function OrderDashboard() {
       deleteMutation.mutate(orderId)
     }
   }
-
-  const filteredCustomers = customers.filter(customer => 
-    customer.name.toLowerCase().includes(customerFilter.toLowerCase())
+  
+  // Add these filter functions
+  const filteredCustomers = customers.filter(customer =>
+    customer.name.toLowerCase().includes(customerSearch.toLowerCase()) ||
+    customer.business_type.toLowerCase().includes(customerSearch.toLowerCase())
   )
+  
+  const filteredProducts = products.filter(product =>
+    product.name.toLowerCase().includes(productSearch.toLowerCase())
+  )
+
+  // const filteredCustomers = customers.filter(customer => 
+  //   customer.name.toLowerCase().includes(customerFilter.toLowerCase())
+  // )
 
   const filteredOrders = orders.filter(order => 
     order.id.toString().includes(orderFilter) ||
@@ -280,26 +295,74 @@ export default function OrderDashboard() {
             <CardContent>
               <div className="space-y-4">
                 <div>
-                  <Label htmlFor="customer">Select Customer</Label>
-                  <Select onValueChange={setSelectedCustomer}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select a customer" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {customers.map((customer) => (
-                        <SelectItem key={customer.id} value={customer.id.toString()}>
-                          {customer.name} ({customer.business_type})
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <Label htmlFor="customer">Search Customer</Label>
+                  <div className="flex gap-2">
+                    <Input
+                      type="text"
+                      placeholder="Search customers..."
+                      value={customerSearch}
+                      onChange={(e) => setCustomerSearch(e.target.value)}
+                    />
+                    {selectedCustomerDetails && (
+                      <Button 
+                        variant="outline" 
+                        onClick={() => {
+                          setSelectedCustomerDetails(null)
+                          setSelectedCustomer(null)
+                        }}
+                      >
+                        Clear
+                      </Button>
+                    )}
+                  </div>
+                  
+                  {customerSearch && !selectedCustomerDetails && (
+                    <Card className="mt-2">
+                      <CardContent className="p-2">
+                        {filteredCustomers.length > 0 ? (
+                          <ul className="space-y-2">
+                            {filteredCustomers.map((customer) => (
+                              <li 
+                                key={customer.id}
+                                className="p-2 hover:bg-accent rounded-md cursor-pointer"
+                                onClick={() => {
+                                  setSelectedCustomer(customer.id.toString())
+                                  setSelectedCustomerDetails(customer)
+                                  setCustomerSearch('')
+                                }}
+                              >
+                                {customer.name} ({customer.business_type})
+                              </li>
+                            ))}
+                          </ul>
+                        ) : (
+                          <p className="text-sm text-muted-foreground">No customers found</p>
+                        )}
+                      </CardContent>
+                    </Card>
+                  )}
+                  
+                  {selectedCustomerDetails && (
+                    <div className="mt-2 p-2 border rounded-md">
+                      <p className="font-medium">{selectedCustomerDetails.name}</p>
+                      <p className="text-sm text-muted-foreground">{selectedCustomerDetails.business_type}</p>
+                    </div>
+                  )}
                 </div>
                 
                 {selectedCustomer && (
                   <div>
                     <h3 className="text-lg font-semibold mb-2">Add Products</h3>
+                    <div className="mb-4">
+                      <Input
+                        type="text"
+                        placeholder="Search products..."
+                        value={productSearch}
+                        onChange={(e) => setProductSearch(e.target.value)}
+                      />
+                    </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                      {products.map((product) => (
+                      {filteredProducts.slice(0, visibleProducts).map((product) => (
                         <Card key={product.id}>
                           <CardHeader>
                             <CardTitle>{product.name}</CardTitle>
@@ -311,6 +374,16 @@ export default function OrderDashboard() {
                         </Card>
                       ))}
                     </div>
+                    {filteredProducts.length > visibleProducts && (
+                      <div className="mt-4 text-center">
+                        <Button 
+                          variant="outline"
+                          onClick={() => setVisibleProducts(prev => prev + 6)}
+                        >
+                          Load More Products
+                        </Button>
+                      </div>
+                    )}
                   </div>
                 )}
                 
@@ -390,7 +463,7 @@ export default function OrderDashboard() {
                   {filteredOrders.map((order) => (
                     <TableRow key={order.id}>
                       <TableCell>{order.id}</TableCell>
-                      <TableCell>{customers.find(c => c.id === order.customer_id)?.name || 'Unknown'}</TableCell>
+                      <TableCell>{customers.contact_person?.name || 'Unknown'}</TableCell>
                       <TableCell>{new Date(order.order_date).toLocaleDateString()}</TableCell>
                       <TableCell>Ksh. {order.total_amount}</TableCell>
                       <TableCell>{order.status}</TableCell>

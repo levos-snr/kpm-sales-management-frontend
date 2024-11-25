@@ -13,7 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Clock, CalendarIcon, Timer, MapPin } from 'lucide-react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import axios from 'axios'
-import SalesReportForm from './SalesReportForm'
+// import SalesReportForm from './SalesReportForm'
 import useStore from '../store'
 import { useNavigate } from 'react-router-dom'
 
@@ -386,7 +386,7 @@ export default function CheckInOutSystem() {
         </DialogContent>
       </Dialog>
 
-      <Dialog open={showSalesReport} onOpenChange={setShowSalesReport}>
+      {/* <Dialog open={showSalesReport} onOpenChange={setShowSalesReport}>
         <DialogContent className="sm:max-w-[800px]">
           <DialogHeader>
             <DialogTitle>Sales Report</DialogTitle>
@@ -411,15 +411,16 @@ export default function CheckInOutSystem() {
                 </SelectContent>
               </Select>
             </div>
-            <SalesReportForm
-              companyId={user.company_id}
-              userId={user.id}
-              customerId={selectedCustomerId}
-              onSubmit={handleSalesReportSubmit}
-            />
-          </div>
-        </DialogContent>
-      </Dialog>
+            {/* <SalesReportForm */}
+              {/* companyId={user.company_id} */}
+              {/* userId={user.id} */}
+              {/* customerId={selectedCustomerId} */}
+              {/* onSubmit={handleSalesReportSubmit} */}
+            {/* /> */}
+          {/* </div> */} 
+        {/* </DialogContent> */}
+      {/* </Dialog> */}
+      
     </div>
   )
 }

@@ -31,7 +31,7 @@ export const TabContent = ({ activeTab }) => {
         return <TasksContent userRole={user.role} />;
       case 'inventory':
         return <Salesinvntory userRole={user.role} />;
-      case 'shedule':
+      case 'check in':
         return <SalesShedule userRole={user.role} />;
       case 'catalog':
         return <SalerepPoducts userRole={user.role} />;

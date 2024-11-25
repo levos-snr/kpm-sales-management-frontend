@@ -30,3 +30,23 @@ export const deleteTask = async (id) => {
   const response = await axios.delete(`/tasks/${id}`);
   return response.data;
 };
+
+export const generateTaskReport = async (id) => {
+  const response = await axios.post(`/tasks/${id}/report`);
+  return response.data;
+};
+
+// export const checkIn = async (location) => {
+//   const response = await axios.post('/checkin', { location });
+//   return response.data;
+// };
+
+// export const checkOut = async (location) => {
+//   const response = await axios.post('/checkout', { location });
+//   return response.data;
+// };
+
+// export const logUnmappedVisit = async (location) => {
+//   const response = await axios.post('/unmapped_visit', { location });
+//   return response.data;
+// };

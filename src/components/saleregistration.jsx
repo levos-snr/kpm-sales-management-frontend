@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import {
   Dialog,
   DialogContent,
@@ -15,14 +16,17 @@ import { registerSalesRep } from '../api/auth'
 import useStore from '../store'
 
 const SalesRepRegistrationForm = ({ onShowTargetsDialog }) => {
+  const currentUser = useStore((state) => state.user)
   const [formData, setFormData] = useState({
     first_name: '',
     last_name: '',
     email: '',
+    admin_email: currentUser.email,
     phone_number: '',
     designation: '',
     id_number: '',
-    device_token: ''
+    device_token: '',
+    location: '',
   })
 
   const handleInputChange = (e) => {
@@ -33,7 +37,10 @@ const SalesRepRegistrationForm = ({ onShowTargetsDialog }) => {
   const handleSubmit = (e) => {
     e.preventDefault()
     if (formData.first_name && formData.last_name && formData.email && formData.phone_number) {
-      onShowTargetsDialog(formData)
+      onShowTargetsDialog({
+        ...formData,
+        admin_email: currentUser.email || formData.admin_email
+      })
     }
   }
 
@@ -105,6 +112,35 @@ const SalesRepRegistrationForm = ({ onShowTargetsDialog }) => {
         />
       </div>
 
+
+      <div>
+        <Label htmlFor="location">Location</Label>
+        <Select
+          name="location"
+          value={formData.location}
+          onValueChange={(value) => handleInputChange({ target: { name: 'location', value } })}
+        >
+          <SelectTrigger>
+            <SelectValue placeholder="Select location" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="South-East">South-East</SelectItem>
+            <SelectItem value="North-East">North-East</SelectItem>
+            <SelectItem value="Nairobi">Nairobi</SelectItem>
+            <SelectItem value="Central">Central</SelectItem>
+            <SelectItem value="Coast">Coast</SelectItem>
+            <SelectItem value="Nyanza">Nyanza</SelectItem>
+            <SelectItem value="Others">Others</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+
+      <input 
+        type="email"
+        name="admin_email" 
+        value={formData.admin_email} 
+      />
+
       <Button type="submit" className="w-full">
         Continue to Targets & Territory
       </Button>
@@ -137,12 +173,12 @@ const TargetsAndTerritoryDialog = ({ isOpen, onClose, basicInfo, onSuccess }) =>
           onClose()
         }
       })
-    
+
       const handleInputChange = (e) => {
         const { name, value } = e.target
         setTargetData(prev => ({ ...prev, [name]: value }))
       }
-    
+
       const handleSubmit = (e) => {
         e.preventDefault()
         const completeData = {
@@ -151,7 +187,7 @@ const TargetsAndTerritoryDialog = ({ isOpen, onClose, basicInfo, onSuccess }) =>
         }
         registerMutation.mutate(completeData)
       }
-    
+
       return (
         <Dialog open={isOpen} onOpenChange={onClose}>
           <DialogContent className="max-w-md">
@@ -169,7 +205,7 @@ const TargetsAndTerritoryDialog = ({ isOpen, onClose, basicInfo, onSuccess }) =>
                   onChange={handleInputChange}
                 />
               </div>
-    
+
               <div className="space-y-2">
                 <Label htmlFor="quarterly_target">Quarterly Target</Label>
                 <Input
@@ -180,7 +216,7 @@ const TargetsAndTerritoryDialog = ({ isOpen, onClose, basicInfo, onSuccess }) =>
                   onChange={handleInputChange}
                 />
               </div>
-    
+
               <div className="space-y-2">
                 <Label htmlFor="yearly_target">Yearly Target</Label>
                 <Input
@@ -191,9 +227,9 @@ const TargetsAndTerritoryDialog = ({ isOpen, onClose, basicInfo, onSuccess }) =>
                   onChange={handleInputChange}
                 />
               </div>
-    
+
               <div className="space-y-2">
-                <Label htmlFor="territory_start_date">Territory Start Date</Label>
+                <Label htmlFor="territory_start_date">Start Date</Label>
                 <Input
                   id="territory_start_date"
                   name="territory_start_date"
@@ -202,9 +238,9 @@ const TargetsAndTerritoryDialog = ({ isOpen, onClose, basicInfo, onSuccess }) =>
                   onChange={handleInputChange}
                 />
               </div>
-    
+
               <div className="space-y-2">
-                <Label htmlFor="territory_end_date">Territory End Date</Label>
+                <Label htmlFor="territory_end_date">End Date</Label>
                 <Input
                   id="territory_end_date"
                   name="territory_end_date"
@@ -213,7 +249,7 @@ const TargetsAndTerritoryDialog = ({ isOpen, onClose, basicInfo, onSuccess }) =>
                   onChange={handleInputChange}
                 />
               </div>
-    
+
               <DialogFooter>
                 <Button type="button" variant="outline" onClick={onClose}>
                   Cancel
@@ -227,21 +263,21 @@ const TargetsAndTerritoryDialog = ({ isOpen, onClose, basicInfo, onSuccess }) =>
         </Dialog>
       )
     }
-    
+
     export const SalesRepRegistration = ({ onSuccess }) => {
       const [showTargetsDialog, setShowTargetsDialog] = useState(false)
       const [basicInfo, setBasicInfo] = useState(null)
-    
+
       const handleShowTargetsDialog = (formData) => {
         setBasicInfo(formData)
         setShowTargetsDialog(true)
       }
-    
+
       const handleCloseDialog = () => {
         setShowTargetsDialog(false)
         setBasicInfo(null)
       }
-    
+
       return (
         <div className="p-4">
           <SalesRepRegistrationForm onShowTargetsDialog={handleShowTargetsDialog} />
@@ -254,5 +290,5 @@ const TargetsAndTerritoryDialog = ({ isOpen, onClose, basicInfo, onSuccess }) =>
         </div>
       )
     }
-    
+
     export default SalesRepRegistration

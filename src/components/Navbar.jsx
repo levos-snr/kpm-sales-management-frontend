@@ -1,21 +1,21 @@
-import React, { useEffect } from 'react';
-import { Bell, Menu, Search } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import UserAvatarMenu from './UserAvatarMenu';
-import NotificationLog from './NotificationLog';
-import useStore from '../store';
+import React, { useEffect } from 'react'
+import { Menu } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import UserAvatarMenu from './UserAvatarMenu'
+import NotificationLog from './NotificationLog'
+import SearchComponent from './SearchComponent'
+import useStore from '../store'
 
 const Navbar = ({ setSidebarOpen, sidebarOpen }) => {
-  const { user, setUser } = useStore();
+  const { user, setUser } = useStore()
 
   useEffect(() => {
     const unsubscribe = useStore.subscribe(
       (state) => state.user,
       (user) => setUser(user)
-    );
-    return unsubscribe;
-  }, [setUser]);
+    )
+    return unsubscribe
+  }, [setUser])
 
   return (
     <div className="flex items-center justify-between h-full">
@@ -37,14 +37,7 @@ const Navbar = ({ setSidebarOpen, sidebarOpen }) => {
 
       {/* Center Section - Search */}
       <div className="flex-1 max-w-2xl mx-auto px-4">
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-          <Input
-            type="text"
-            placeholder="Search anything..."
-            className="w-full pl-10 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:bg-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors"
-          />
-        </div>
+        <SearchComponent />
       </div>
 
       {/* Right Section */}
@@ -58,7 +51,9 @@ const Navbar = ({ setSidebarOpen, sidebarOpen }) => {
         <UserAvatarMenu user={user} />
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Navbar;
+export default Navbar
+
+

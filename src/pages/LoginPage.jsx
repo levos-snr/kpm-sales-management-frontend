@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -6,12 +6,11 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Separator } from '@/components/ui/separator';
-import { Eye, EyeOff, Mail, Apple, ArrowRight, Check } from 'lucide-react';
-import { Auth } from '@supabase/auth-ui-react';
-import { ThemeSupa } from '@supabase/auth-ui-shared';
+import { Eye, EyeOff, Mail, Apple, ArrowRight, Check, Users, BarChart3, Building2 } from 'lucide-react';
 import { FaGithub } from 'react-icons/fa6';
 import supabase from '@/lib/supabase';
 import useLogin from '@/hooks/useLogin';
+import logo from "../assets/logo.png";
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -25,7 +24,6 @@ const LoginPage = () => {
   const { login, isLoading } = useLogin();
 
   useEffect(() => {
-    //  session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       if (session) {
@@ -33,7 +31,6 @@ const LoginPage = () => {
       }
     });
 
-    // Listen for auth changes
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
@@ -64,7 +61,6 @@ const LoginPage = () => {
       const { error } = await supabase.auth.signOut();
       if (error) {
         console.error('Error signing out:', error.message);
-        // toast notification
       } else {
         navigate('/');
       }
@@ -84,7 +80,6 @@ const LoginPage = () => {
 
       if (error) {
         console.error(`Error signing in with ${provider}:`, error.message);
-        // toast notification
       }
     } catch (error) {
       console.error('Error:', error);
@@ -92,18 +87,17 @@ const LoginPage = () => {
   };
 
   const Features = ({ icon, title, description }) => (
-    <div className="flex items-start space-x-4">
-      <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0">
+    <div className="flex items-start space-x-4 bg-white/10 p-4 rounded-lg transition-all duration-300 hover:bg-white/20">
+      <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center flex-shrink-0">
         {icon}
       </div>
       <div>
         <h3 className="font-semibold text-lg text-white">{title}</h3>
-        <p className="text-white/70 text-sm">{description}</p>
+        <p className="text-white/80 text-sm">{description}</p>
       </div>
     </div>
   );
 
-  //  logged in state
   if (session) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
@@ -129,71 +123,57 @@ const LoginPage = () => {
 
   return (
     <div className="min-h-screen flex flex-col lg:flex-row">
-      {/* Left Section - Branding */}
       <div className="w-full lg:w-1/2 bg-gradient-to-br from-blue-600 to-indigo-800 relative overflow-hidden">
         <div className="absolute inset-0">
           <div className="absolute inset-0 bg-black/20" />
           <img
-            src="/api/placeholder/1200/800"
+            src="https://media.istockphoto.com/id/1385168396/photo/people-registering-for-the-conference-event.jpg?s=612x612&w=0&k=20&c=ZHMACoGg5zfL-nUzjoXTrXedDXXoj_E7rBZBihaWfBA="
             alt="Abstract background"
             className="object-cover w-full h-full opacity-20"
           />
         </div>
 
         <div className="relative z-10 h-full p-12 flex flex-col">
-          <div className="mb-12">
-            <h1 className="text-3xl font-bold text-white">FIELDSALE</h1>
-          </div>
-
           <div className="my-auto space-y-12">
             <div>
-              <h2 className="text-4xl font-bold text-white mb-4">
-                Welcome Back!
+              <h2 className="text-5xl font-bold text-white mb-6 leading-tight">
+                Welcome Back to FieldSale
               </h2>
-              <p className="text-xl text-white/90">
-                Sign in to continue your journey
+              <p className="text-2xl text-white/90 leading-relaxed">
+                Sign in to continue managing your sales teams effectively
               </p>
             </div>
 
             <div className="space-y-8">
               <Features
-                icon={<Check className="w-6 h-6 text-white" />}
-                title="Smart Analytics"
-                description="Get real-time insights into your business performance"
+                icon={<Users className="w-6 h-6 text-white" />}
+                title="Team Management"
+                description="Manage your sales representatives efficiently"
               />
               <Features
-                icon={<Check className="w-6 h-6 text-white" />}
-                title="Team Collaboration"
-                description="Work seamlessly with your team members"
+                icon={<BarChart3 className="w-6 h-6 text-white" />}
+                title="Performance Analytics"
+                description="Track sales performance and team metrics"
               />
               <Features
-                icon={<Check className="w-6 h-6 text-white" />}
-                title="Secure Platform"
-                description="Enterprise-grade security for your data"
+                icon={<Building2 className="w-6 h-6 text-white" />}
+                title="Multi-branch Support"
+                description="Manage multiple locations from one platform"
               />
-            </div>
-          </div>
-
-          <div className="mt-auto">
-            <div className="flex space-x-3">
-              <div className="w-8 h-1 rounded-full bg-white/90" />
-              <div className="w-2 h-1 rounded-full bg-white/30" />
-              <div className="w-2 h-1 rounded-full bg-white/30" />
             </div>
           </div>
         </div>
       </div>
 
-      {/* Right Section - Login Form */}
       <div className="w-full lg:w-1/2 bg-gray-50">
         <div className="h-full flex flex-col">
           <div className="p-6 flex justify-end space-x-4">
-            <Button variant="ghost" size="sm">
-              New to our platform?{' '}
+            <Button variant="ghost" size="sm" className="text-gray-600 hover:text-gray-900">
+              New to our platform?
             </Button>
             <Button
               size="sm"
-              className="bg-blue-600 text-white hover:bg-blue-700"
+              className="bg-blue-600 text-white hover:bg-blue-700 transition-colors duration-300"
               onClick={() => navigate('/register')}
             >
               Sign up
@@ -201,12 +181,23 @@ const LoginPage = () => {
           </div>
 
           <div className="flex-1 flex items-center justify-center p-6 sm:p-12">
-            <Card className="w-full max-w-md border-none shadow-none bg-transparent">
-              <CardContent>
+            <Card className="w-full max-w-md border-none shadow-xl bg-white rounded-2xl">
+              <CardContent className="p-8">
+                <div className="flex justify-center mb-8">
+                  <img
+                    src={logo}
+                    alt="FieldSale Logo"
+                    width={150}
+                    height={50}
+                    className="h-24 w-auto"
+                  />
+                </div>
                 <div className="mb-8">
-                  <h2 className="text-2xl font-bold text-gray-900">Sign In</h2>
-                  <p className="text-gray-600 mt-2">
-                    Please enter your details
+                  <h2 className="text-3xl font-bold text-gray-900 mb-2">
+                    Sign In
+                  </h2>
+                  <p className="text-gray-600">
+                    Please enter your details to access your account
                   </p>
                 </div>
 
@@ -293,45 +284,42 @@ const LoginPage = () => {
                         </span>
                       )}
                     </Button>
-
-                    <div className="relative">
-                      <Separator className="my-8" />
-                      <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-gray-50 px-4 text-sm text-gray-500">
-                        Or continue with
-                      </span>
-                    </div>
-
-                    <div className="grid grid-cols-3 gap-4">
-                      <Button
-                        type="button"
-                        variant="outline"
-                        className="h-12 border-gray-200 hover:bg-gray-50"
-                        onClick={() => handleOAuthLogin('google')}
-                      >
-                        <Mail className="w-5 h-5 mr-2" />
-                        Google
-                      </Button>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        className="h-12 border-gray-200 hover:bg-gray-50"
-                        onClick={() => handleOAuthLogin('apple')}
-                      >
-                        <Apple className="w-5 h-5 mr-2" />
-                        Apple
-                      </Button>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        className="h-12 border-gray-200 hover:bg-gray-50"
-                        onClick={() => handleOAuthLogin('github')}
-                      >
-                        <FaGithub className="w-5 h-5 mr-2" />
-                        GitHub
-                      </Button>
-                    </div>
                   </div>
                 </form>
+
+                <div className="mt-6">
+                  <Separator className="my-4" />
+                  <p className="text-center text-sm text-gray-500 my-4">Or continue with</p>
+                  <div className="grid grid-cols-3 gap-4">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="h-12 border-gray-200 hover:bg-gray-50"
+                      onClick={() => handleOAuthLogin('google')}
+                    >
+                      <Mail className="w-5 h-5 mr-2" />
+                      Google
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="h-12 border-gray-200 hover:bg-gray-50"
+                      onClick={() => handleOAuthLogin('apple')}
+                    >
+                      <Apple className="w-5 h-5 mr-2" />
+                      Apple
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="h-12 border-gray-200 hover:bg-gray-50"
+                      onClick={() => handleOAuthLogin('github')}
+                    >
+                      <FaGithub className="w-5 h-5 mr-2" />
+                      GitHub
+                    </Button>
+                  </div>
+                </div>
               </CardContent>
             </Card>
           </div>

@@ -14,13 +14,14 @@ import * as Sentry from '@sentry/react';
 Sentry.init({
   dsn: 'https://21bd041ce6905a9e923ce312defb708d@o4508283672461312.ingest.de.sentry.io/4508283676721232',
   integrations: [],
+  authToken: import.meta.env.VITE_SENTRY_AUTH_TOKEN,
 });
 
 // Configure QueryClient
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 1000 * 60 * 5, // 5 minutes
+      staleTime: 1000 * 60 * 5, 
       retry: 1,
       refetchOnWindowFocus: false,
     },

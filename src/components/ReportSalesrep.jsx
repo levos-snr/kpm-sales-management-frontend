@@ -53,6 +53,8 @@ export default function AdvancedDashboard() {
     queryKey: ['dashboardOverview'],
     queryFn: fetchDashboardOverview,
   });
+  
+  console.log(overviewData)
 
   const { data: recentActivities, isLoading: isActivitiesLoading, error: activitiesError } = useQuery({
     queryKey: ['recentActivities'],

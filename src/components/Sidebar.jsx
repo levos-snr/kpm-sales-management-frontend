@@ -38,13 +38,11 @@ const Sidebar = ({ isOpen, activeTab, setActiveTab }) => {
       { icon: ClipboardMinus, label: 'Dashboard' },
       { icon: ClipboardList, label: 'Tasks' },
       { icon: ShoppingBasket, label: 'Inventory' },
-      { icon: CalendarCheck2, label: 'Shedule' },
+      { icon: CalendarCheck2, label: 'Check In' },
       { icon: Store, label: 'Customers' },
       { icon: ListCheck, label: 'Catalog' },
       { icon: ClockArrowDown, label: 'Orders' },
-      { icon: Calendar1, label: 'Visit Planner' },
-      { icon: DatabaseBackup, label: 'Data Recording' },
-      { icon: UsersRound, label: 'Team Announcements' }
+
     ]
   };
 

@@ -18,8 +18,6 @@ const fetchRecentSales = async () => {
   // Simulation
   return [
     { id: 1, product_id: 1, quantity: 5, total_amount: 54.95, date: '2024-11-17' },
-    { id: 2, product_id: 2, quantity: 10, total_amount: 59.90, date: '2024-11-16' },
-    { id: 3, product_id: 3, quantity: 2, total_amount: 31.98, date: '2024-11-15' },
   ]
 }
 

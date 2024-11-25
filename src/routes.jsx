@@ -1,6 +1,7 @@
 import { lazy, Suspense } from 'react';
 import App from '/src/App.jsx';
 import { AuthProvider, ProtectedRoute, AuthRoute } from './lib/AuthProvider';
+import LoadingSpinner  from "/src/components/LoadingSpinner"
 
 // Lazy load
 const Layout = lazy(() => import('/src/components/Layout'));
@@ -9,7 +10,6 @@ const CrazyNotFoundPage = lazy(() => import('/src/pages/CrazyNotFoundPage'));
 const RegistrationPage = lazy(() => import('/src/pages/RegistrationPage'));
 const SuccessPage = lazy(() => import('/src/pages/SuccessPage'));
 const StatsHeader = lazy(() => import('/src/components/StatsHeader'));
-const LoadingSpinner = lazy(() => import('/src/components/LoadingSpinner'));
 const Profile = lazy(() => import('/src/pages/Profile'));
 
 const routes = [

@@ -95,6 +95,7 @@ export default function TeamContent() {
     setEmployeeToDelete(employee);
     setShowDeleteDialog(true);
   };
+  
 
   const handleExport = () => {
     const headers = [
@@ -104,6 +105,7 @@ export default function TeamContent() {
       'Contact Number',
       'Designation',
       'Managed By',
+      'location',
       'Status',
     ];
     const csvContent = [
@@ -117,7 +119,8 @@ export default function TeamContent() {
           emp.designation || 'N/A',
           emp.manager
             ? `${emp.manager.first_name} ${emp.manager.last_name}`
-            : 'N/A',
+            : 'N/A', 
+          emp.location || 'N/A',
           emp.status,
         ].join(',')
       ),
@@ -172,6 +175,7 @@ export default function TeamContent() {
                   <TableHead>Contact Number</TableHead>
                   <TableHead>Designation</TableHead>
                   <TableHead>Managed By</TableHead>
+                  <TableHead>location</TableHead>
                   <TableHead>Status</TableHead>
                   {(currentUser.role === 'admin' || currentUser.role === 'manager') && (
                     <TableHead>Actions</TableHead>
@@ -218,6 +222,7 @@ export default function TeamContent() {
                             ? 'None'
                             : 'Not Assigned'}
                         </TableCell>
+                        <TableCell>{employee.location || 'N/A'}</TableCell>
                         <TableCell>
                           <span
                             className={`px-2 py-1 rounded-full text-xs font-medium ${
@@ -230,7 +235,8 @@ export default function TeamContent() {
                           </span>
                         </TableCell>
                         {(currentUser.role === 'admin' || currentUser.role === 'manager') && (
-                          <TableCell>
+                         
+                            <TableCell>
                             <div className="flex gap-2">
                               <Button
                                 variant="destructive"
@@ -239,8 +245,10 @@ export default function TeamContent() {
                               >
                                 Delete
                               </Button>
+                                
                             </div>
                           </TableCell>
+                          
                         )}
                       </TableRow>
                     ))
